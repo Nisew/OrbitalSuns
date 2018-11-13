@@ -13,7 +13,6 @@ public class Ship : MonoBehaviour
     float rotationSpeed;
     public bool orbiting;
 
-
     void Start()
     {
         
@@ -32,6 +31,6 @@ public class Ship : MonoBehaviour
     public void Creation()
     {
         rotationSpeed = Random.Range(50, 100);
-        orbitRadius = Random.Range(orbitalParent.orbitDistance - 0.5f, orbitalParent.orbitDistance + 0.5f);
+        orbitRadius = Random.Range(orbitalParent.orbitDistance - 0.25f, orbitalParent.orbitDistance + 0.25f);
     }
 }

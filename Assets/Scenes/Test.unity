@@ -152,6 +152,16 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 114589010190321992, guid: 064386f2a87505a4a98bb3a9ab1cc585,
+        type: 2}
+      propertyPath: orbitDistance
+      value: 1.29
+      objectReference: {fileID: 0}
+    - target: {fileID: 114589010190321992, guid: 064386f2a87505a4a98bb3a9ab1cc585,
+        type: 2}
+      propertyPath: orbitSaturation
+      value: 1000
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 064386f2a87505a4a98bb3a9ab1cc585, type: 2}
   m_IsPrefabParent: 0
@@ -196,7 +206,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.0025354768, g: 0, b: 0.042, a: 0}
+  m_BackGroundColor: {r: 0.071, g: 0, b: 0.13, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0

@@ -12,7 +12,6 @@ public class Star : MonoBehaviour
     public List<GameObject> orbitingShips = new List<GameObject>();
     public Vector2[] spawnPoints = new Vector2[8];
     public float orbitDistance;
-
     float counter;
 
 	void Start ()
@@ -22,7 +21,7 @@ public class Star : MonoBehaviour
 	
 	void Update ()
     {
-		if(orbitingShips.Count <= orbitSaturation)
+		if(orbitingShips.Count <= orbitSaturation) //SPAWN SHIPS OVER TIME
         {
             counter += Time.deltaTime;
 

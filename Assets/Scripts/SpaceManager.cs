@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class SpaceManager : MonoBehaviour
 {
+    [Header("Star Elements")]
     public List<Star> starList;
+
+    [Header("Ship Elements")]
     public List<GameObject> totalShips;
-    public int totalNumberShips = 0;
     public GameObject shipPrefab;
+    public int totalNumberShips = 0;
 
     void Awake()
     {
@@ -38,7 +41,7 @@ public class SpaceManager : MonoBehaviour
         {
             starScript.Add(star.GetComponent<Star>());
             star.GetComponent<Star>().MeetUniverse(GetComponent<SpaceManager>());
-            totalNumberShips += star.GetComponent<Star>().orbitSaturation*2;
+            totalNumberShips += star.GetComponent<Star>().orbitSaturation;
         }
 
         return starScript;
@@ -46,7 +49,7 @@ public class SpaceManager : MonoBehaviour
 
     void CreateAllShips()
     {
-        for(int i = 0; i < totalNumberShips*2; i++)
+        for(int i = 0; i < totalNumberShips*1.5; i++)
         {
             GameObject ship;
 
