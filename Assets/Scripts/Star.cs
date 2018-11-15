@@ -8,20 +8,22 @@ public class Star : MonoBehaviour
     SpaceManager spaceManager;
 
     [Header("Star Elements")]
+    public int player = 0;
     public int orbitSaturation = 100;
-    public List<GameObject> orbitingShips = new List<GameObject>();
+    public List<Ship> orbitingShips = new List<Ship>();
     public Vector2[] spawnPoints = new Vector2[8];
     public float orbitDistance;
+    public Vector2 objective;
     float counter;
 
 	void Start ()
     {
-
+        SetSpawnPoints();
     }
 	
 	void Update ()
     {
-		if(orbitingShips.Count <= orbitSaturation) //SPAWN SHIPS OVER TIME
+		if(orbitingShips.Count < orbitSaturation) //SPAWN SHIPS OVER TIME
         {
             counter += Time.deltaTime;
 
@@ -33,10 +35,34 @@ public class Star : MonoBehaviour
         }
 	}
 
+    #region STAR METHODS
+
+    public void LaunchShips(bool allin, Vector2 obj) //SEND ALL OR HALF OF ORBITING SHIPS
+    {
+        objective = obj;
+
+        if(allin == true)
+        {
+            for(int i = 0; i < orbitingShips.Count; i++)
+            {
+                orbitingShips[i].Launch(objective);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < orbitingShips.Count/2; i++)
+            {
+                orbitingShips[i].Launch(objective);
+                RemoveShip(orbitingShips[i]);
+            }
+        }
+    }
+
     public void CreateShip() //CREATE A NEW SHIP THAT STARTS ORBITING
     {
         GameObject ship = spaceManager.ActiveShip();
         ship.SetActive(true);
+        ship.GetComponentInChildren<SpriteRenderer>().color = spaceManager.TintShips(player);
 
         int i = Random.Range(0, 7);
 
@@ -52,14 +78,13 @@ public class Star : MonoBehaviour
 
         ship.GetComponent<Ship>().orbitalParent = this;
         ship.GetComponent<Ship>().Creation();
-
-        AddShip(ship);
-
     }
+
+    #endregion
 
     #region LIST METHODS
 
-    public void AddShip(GameObject ship) //ADD A SHIP TO THE PLANET ORBIT
+    public void AddShip(Ship ship) //ADD A SHIP TO THE PLANET ORBIT
     {
         if (!orbitingShips.Contains(ship))
         {
@@ -67,7 +92,7 @@ public class Star : MonoBehaviour
         }
     }
 
-    public void RemoveShip(GameObject ship) //REMOVE A SHIP FROM THE PLANET ORBIT
+    public void RemoveShip(Ship ship) //REMOVE A SHIP FROM THE PLANET ORBIT
     {
         if (orbitingShips.Contains(ship))
         {
@@ -82,6 +107,18 @@ public class Star : MonoBehaviour
     public void MeetUniverse(SpaceManager universe)
     {
         spaceManager = universe;
+    }
+
+    void SetSpawnPoints()
+    {
+        spawnPoints[0] = new Vector2(transform.position.x, transform.position.y + 0.3f);
+        spawnPoints[1] = new Vector2(transform.position.x + 0.2f, transform.position.y + 0.2f);
+        spawnPoints[2] = new Vector2(transform.position.x + 0.3f, transform.position.y);
+        spawnPoints[3] = new Vector2(transform.position.x + 0.2f, transform.position.y - 0.2f);
+        spawnPoints[4] = new Vector2(transform.position.x, transform.position.y - 0.3f);
+        spawnPoints[5] = new Vector2(transform.position.x - 0.2f, transform.position.y - 0.2f);
+        spawnPoints[6] = new Vector2(transform.position.x - 0.3f, transform.position.y);
+        spawnPoints[7] = new Vector2(transform.position.x - 0.2f, transform.position.y + 0.2f);
     }
 
     #endregion

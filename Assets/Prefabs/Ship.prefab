@@ -100,8 +100,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   orbitalParent: {fileID: 0}
-  orbitRadius: 0
+  counter: 0
   orbiting: 1
+  live: 0
+  orbitRadius: 0
+  destiny: {x: 0, y: 0}
 --- !u!212 &212297085841034652
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -137,7 +140,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 1e3beb9e5d7c0dd40b0dc7a502b22edb, type: 3}
-  m_Color: {r: 0.70131856, g: 0.30147058, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.30147058, b: 0.48935103, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
