@@ -6,6 +6,9 @@ public class SpaceManager : MonoBehaviour
 {
     [Header("Star Elements")]
     public List<Star> starList;
+    float doubleClickTime = 2f;
+    bool firstClick;
+    float clickTime;
 
     [Header("Ship Elements")]
     public List<GameObject> totalShips;
@@ -16,6 +19,7 @@ public class SpaceManager : MonoBehaviour
     public Color player1;
     public Color player2;
     public GameObject selectedStar;
+    public GameObject selectedTargetStar;
 
     void Awake()
     {
@@ -60,8 +64,31 @@ public class SpaceManager : MonoBehaviour
                 {
                     if(hit.collider.gameObject != selectedStar) //TRANSFER SHIPS TO CLICKED STAR
                     {
-                        selectedStar.GetComponent<Star>().LaunchShips(false, hit.collider.transform.position);
+                        if(!firstClick)
+                        {
+                            selectedTargetStar = hit.collider.gameObject;
+                            firstClick = true;
+                        }
+                        else
+                        {
+                            selectedStar.GetComponent<Star>().LaunchShips(true, hit.collider.transform.position); //TRANSFER ALL SHIPS
+                            firstClick = false;
+                            Debug.Log("2clic");
+                        }
                     }
+                }
+            }
+
+            if(firstClick)
+            {
+                clickTime += Time.deltaTime;
+
+                if(clickTime >= doubleClickTime)
+                {
+                    firstClick = false;
+                    clickTime = 0;
+                    Debug.Log("1clic");
+                    selectedStar.GetComponent<Star>().LaunchShips(false, selectedTargetStar.transform.position); //TRANSFER HALF SHIPS
                 }
             }
         }
@@ -88,7 +115,7 @@ public class SpaceManager : MonoBehaviour
 
     void CreateAllShips()
     {
-        for(int i = 0; i < totalNumberShips*1.5; i++)
+        for(int i = 0; i < totalNumberShips*2; i++)
         {
             GameObject ship;
 

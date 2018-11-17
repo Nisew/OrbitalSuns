@@ -32,25 +32,11 @@ public class Ship : MonoBehaviour
     {
         if(orbiting)
         {
-            ToOrbit();
             Orbit();
         }
         else
         {
             Transfer();
-        }
-    }
-
-    public void ToOrbit()
-    {
-        if(counter < orbitTime)
-        {
-            counter += Time.deltaTime;
-        }
-
-        if(counter >= orbitTime)
-        {
-            orbitalParent.AddShip(this);
         }
     }
 
@@ -83,4 +69,5 @@ public class Ship : MonoBehaviour
         speed = Random.Range(0.8f, 1);
         orbitRadius = Random.Range(orbitalParent.orbitDistance - 0.25f, orbitalParent.orbitDistance + 0.25f);
     }
+
 }

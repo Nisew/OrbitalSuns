@@ -6,15 +6,18 @@ public class Star : MonoBehaviour
 {
     [Header("Space Elements")]
     SpaceManager spaceManager;
+    float time;
 
     [Header("Star Elements")]
-    public int player = 0;
-    public int orbitSaturation = 100;
-    public List<Ship> orbitingShips = new List<Ship>();
     public Vector2[] spawnPoints = new Vector2[8];
+    public int orbitSaturation;
     public float orbitDistance;
+    public int player = 0;
+
+    [Header("Ship Elements")]
+    public List<Ship> orbitingShips = new List<Ship>();
+    int provisionalOrbitingShips;
     public Vector2 objective;
-    float counter;
 
 	void Start ()
     {
@@ -25,32 +28,35 @@ public class Star : MonoBehaviour
     {
 		if(orbitingShips.Count < orbitSaturation) //SPAWN SHIPS OVER TIME
         {
-            counter += Time.deltaTime;
+            time += Time.deltaTime;
 
-            if(counter >= 0.5f)
+            if(time >= 1f)
             {
                 CreateShip();
-                counter = 0;
+                time = 0;
             }
         }
 	}
 
     #region STAR METHODS
 
-    public void LaunchShips(bool allin, Vector2 obj) //SEND ALL OR HALF OF ORBITING SHIPS
+    public void LaunchShips(bool sendAll, Vector2 obj) //SEND ALL OR HALF OF ORBITING SHIPS
     {
+        Debug.Log("AH");
         objective = obj;
+        provisionalOrbitingShips = orbitingShips.Count;
 
-        if(allin == true)
+        if (sendAll)
         {
-            for(int i = 0; i < orbitingShips.Count; i++)
+            for (int i = 0; i < provisionalOrbitingShips; i++)
             {
                 orbitingShips[i].Launch(objective);
+                RemoveShip(orbitingShips[i]);
             }
         }
         else
         {
-            for (int i = 0; i < orbitingShips.Count/2; i++)
+            for (int i = 0; i < provisionalOrbitingShips/2; i++)
             {
                 orbitingShips[i].Launch(objective);
                 RemoveShip(orbitingShips[i]);
@@ -78,6 +84,7 @@ public class Star : MonoBehaviour
 
         ship.GetComponent<Ship>().orbitalParent = this;
         ship.GetComponent<Ship>().Creation();
+        AddShip(ship.GetComponent<Ship>());
     }
 
     #endregion
