@@ -211,7 +211,7 @@ Prefab:
     - target: {fileID: 114589010190321992, guid: 064386f2a87505a4a98bb3a9ab1cc585,
         type: 2}
       propertyPath: orbitSaturation
-      value: 5
+      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 064386f2a87505a4a98bb3a9ab1cc585, type: 2}
