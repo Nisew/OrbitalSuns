@@ -64,7 +64,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1692795689382218}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.666, y: 0.001, z: 0.0044824197}
+  m_LocalPosition: {x: -2.4356103, y: -0.16819644, z: 0.0044824197}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4616456959132286}
@@ -102,9 +102,10 @@ MonoBehaviour:
   orbitalParent: {fileID: 0}
   counter: 0
   orbiting: 1
-  live: 0
+  player: 0
+  life: 0
   orbitRadius: 0
-  destiny: {x: 0, y: 0}
+  destiny: {fileID: 0}
 --- !u!212 &212297085841034652
 SpriteRenderer:
   m_ObjectHideFlags: 1

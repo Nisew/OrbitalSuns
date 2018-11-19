@@ -4,16 +4,17 @@ using UnityEngine;
 
 public class SpaceManager : MonoBehaviour
 {
-    [Header("Star Elements")]
-    public List<Star> starList;
-    float doubleClickTime = 2f;
+    [Header("Space Elements")]
+    float doubleClickTime = 0.5f;
     bool firstClick;
     float clickTime;
+
+    [Header("Star Elements")]
+    public List<Star> starList;
 
     [Header("Ship Elements")]
     public List<GameObject> totalShips;
     public GameObject shipPrefab;
-    public int totalNumberShips = 0;
 
     [Header("Player Elements")]
     public Color player1;
@@ -24,12 +25,11 @@ public class SpaceManager : MonoBehaviour
     void Awake()
     {
         starList = TakeAllStars();
-        CreateAllShips();
     }
 
 	void Start()
     {
-		
+        CreateFewShips(1);
 	}
 	
 	void Update()
@@ -67,13 +67,14 @@ public class SpaceManager : MonoBehaviour
                         if(!firstClick)
                         {
                             selectedTargetStar = hit.collider.gameObject;
+                            clickTime = 0;
                             firstClick = true;
                         }
                         else
                         {
-                            selectedStar.GetComponent<Star>().LaunchShips(true, hit.collider.transform.position); //TRANSFER ALL SHIPS
                             firstClick = false;
-                            Debug.Log("2clic");
+                            clickTime = 0;
+                            selectedStar.GetComponent<Star>().LaunchShips(true, hit.collider.GetComponent<Star>()); //TRANSFER ALL SHIPS
                         }
                     }
                 }
@@ -87,8 +88,7 @@ public class SpaceManager : MonoBehaviour
                 {
                     firstClick = false;
                     clickTime = 0;
-                    Debug.Log("1clic");
-                    selectedStar.GetComponent<Star>().LaunchShips(false, selectedTargetStar.transform.position); //TRANSFER HALF SHIPS
+                    selectedStar.GetComponent<Star>().LaunchShips(false, selectedTargetStar.GetComponent<Star>()); //TRANSFER HALF SHIPS
                 }
             }
         }
@@ -107,23 +107,18 @@ public class SpaceManager : MonoBehaviour
         {
             starScript.Add(star.GetComponent<Star>());
             star.GetComponent<Star>().MeetUniverse(GetComponent<SpaceManager>());
-            totalNumberShips += star.GetComponent<Star>().orbitSaturation;
         }
 
         return starScript;
     }
 
-    void CreateAllShips()
+    void CreateFewShips(int ships) //CREATES INACTIVE SHIPS
     {
-        for(int i = 0; i < totalNumberShips*2; i++)
+        for(int i = 0; i < ships; i++)
         {
-            GameObject ship;
-
-            ship = Instantiate(shipPrefab);
-
+            GameObject ship = Instantiate(shipPrefab);
             totalShips.Add(ship);
             ship.SetActive(false);
-
         }
     }
 
@@ -131,7 +126,7 @@ public class SpaceManager : MonoBehaviour
 
     #region SHIPS METHODS
 
-    public GameObject ActiveShip()
+    public GameObject ActiveShip() //PASS AN INACTIVE SHIP OR CREATES A NEW ONE IF ALL ARE ACTIVE
     {
         GameObject ship = totalShips[0];
 
@@ -140,6 +135,12 @@ public class SpaceManager : MonoBehaviour
             if (!totalShips[i].activeInHierarchy)
             {
                 ship = totalShips[i];
+                break;
+            }
+            if(totalShips[totalShips.Count-1].activeInHierarchy)
+            {
+                ship = Instantiate(shipPrefab);
+                totalShips.Add(ship);
                 break;
             }
         }
@@ -158,4 +159,5 @@ public class SpaceManager : MonoBehaviour
     }
 
     #endregion
+
 }

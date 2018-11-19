@@ -154,7 +154,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1184311047551364, guid: 064386f2a87505a4a98bb3a9ab1cc585, type: 2}
       propertyPath: m_Name
-      value: Sun (1)
+      value: MegaSun
       objectReference: {fileID: 0}
     - target: {fileID: 114589010190321992, guid: 064386f2a87505a4a98bb3a9ab1cc585,
         type: 2}
@@ -164,7 +164,20 @@ Prefab:
     - target: {fileID: 114589010190321992, guid: 064386f2a87505a4a98bb3a9ab1cc585,
         type: 2}
       propertyPath: orbitSaturation
-      value: 0
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 4078699453447214, guid: 064386f2a87505a4a98bb3a9ab1cc585, type: 2}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4078699453447214, guid: 064386f2a87505a4a98bb3a9ab1cc585, type: 2}
+      propertyPath: m_LocalScale.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114589010190321992, guid: 064386f2a87505a4a98bb3a9ab1cc585,
+        type: 2}
+      propertyPath: energyProduction
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 064386f2a87505a4a98bb3a9ab1cc585, type: 2}
@@ -211,7 +224,17 @@ Prefab:
     - target: {fileID: 114589010190321992, guid: 064386f2a87505a4a98bb3a9ab1cc585,
         type: 2}
       propertyPath: orbitSaturation
-      value: 50
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 114589010190321992, guid: 064386f2a87505a4a98bb3a9ab1cc585,
+        type: 2}
+      propertyPath: orbitDistance
+      value: 1.12
+      objectReference: {fileID: 0}
+    - target: {fileID: 114589010190321992, guid: 064386f2a87505a4a98bb3a9ab1cc585,
+        type: 2}
+      propertyPath: energyProduction
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 064386f2a87505a4a98bb3a9ab1cc585, type: 2}

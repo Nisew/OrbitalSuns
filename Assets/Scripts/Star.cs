@@ -13,9 +13,11 @@ public class Star : MonoBehaviour
     public int orbitSaturation;
     public float orbitDistance;
     public int player = 0;
+    public float energyProduction;
 
     [Header("Ship Elements")]
     public List<Ship> orbitingShips = new List<Ship>();
+    public List<Ship> enemyOrbitingShips = new List<Ship>();
     int provisionalOrbitingShips;
     public Vector2 objective;
 
@@ -30,44 +32,46 @@ public class Star : MonoBehaviour
         {
             time += Time.deltaTime;
 
-            if(time >= 1f)
+            if(time >= energyProduction)
             {
                 CreateShip();
                 time = 0;
             }
         }
+
+        if(enemyOrbitingShips.Count > 0) //FIGHT!
+        {
+            War();
+        }
 	}
 
     #region STAR METHODS
 
-    public void LaunchShips(bool sendAll, Vector2 obj) //SEND ALL OR HALF OF ORBITING SHIPS
+    public void LaunchShips(bool sendAll, Star obj) //SEND ALL OR HALF OF ORBITING SHIPS
     {
-        Debug.Log("AH");
-        objective = obj;
         provisionalOrbitingShips = orbitingShips.Count;
 
         if (sendAll)
         {
             for (int i = 0; i < provisionalOrbitingShips; i++)
             {
-                orbitingShips[i].Launch(objective);
-                RemoveShip(orbitingShips[i]);
+                orbitingShips[i].Launch(obj);
             }
         }
         else
         {
             for (int i = 0; i < provisionalOrbitingShips/2; i++)
             {
-                orbitingShips[i].Launch(objective);
-                RemoveShip(orbitingShips[i]);
+                orbitingShips[i].Launch(obj);
             }
         }
     }
 
-    public void CreateShip() //CREATE A NEW SHIP THAT STARTS ORBITING
+    public void CreateShip() //TAKE A SHIP FROM SPACE MANAGER AND PLACE IT IN GAME
     {
         GameObject ship = spaceManager.ActiveShip();
         ship.SetActive(true);
+        ship.GetComponent<Ship>().player = player;
         ship.GetComponentInChildren<SpriteRenderer>().color = spaceManager.TintShips(player);
 
         int i = Random.Range(0, 7);
@@ -87,6 +91,45 @@ public class Star : MonoBehaviour
         AddShip(ship.GetComponent<Ship>());
     }
 
+    public void War() //FIGHT AGAINST INVASORS
+    {
+        if (orbitingShips.Count == 0) //LOSE
+        {
+            player = enemyOrbitingShips[0].player;
+
+            for (int i = 0; i < enemyOrbitingShips.Count; i++)
+            {
+                Ship enemyShip = enemyOrbitingShips[i];
+
+                RemoveEnemyShip(enemyOrbitingShips[i]);
+                AddShip(enemyShip);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < enemyOrbitingShips.Count; i++)
+            {
+                if (orbitingShips.Count == 0) break;
+
+                enemyOrbitingShips[i].CrushAnotherShip(orbitingShips[i]);
+
+                if (enemyOrbitingShips[i].life <= 0) //ENEMY SHIP DEAD
+                {
+                    enemyOrbitingShips[i].Destruction();
+                    RemoveEnemyShip(enemyOrbitingShips[i]);
+                }
+
+                if (orbitingShips.Count == 0) break;
+
+                if (orbitingShips[i].life <= 0) //ALLY SHIP DEAD
+                {
+                    orbitingShips[i].Destruction();
+                    RemoveShip(orbitingShips[i]);
+                }
+            }
+        }
+    } 
+
     #endregion
 
     #region LIST METHODS
@@ -99,11 +142,27 @@ public class Star : MonoBehaviour
         }
     }
 
+    public void AddEnemyShip(Ship ship) //ADD AN ENEMY SHIP TO THE PLANET ORBIT
+    {
+        if (!enemyOrbitingShips.Contains(ship))
+        {
+            enemyOrbitingShips.Add(ship);
+        }
+    }
+
     public void RemoveShip(Ship ship) //REMOVE A SHIP FROM THE PLANET ORBIT
     {
         if (orbitingShips.Contains(ship))
         {
             orbitingShips.Remove(ship);
+        }
+    }
+
+    public void RemoveEnemyShip(Ship ship) //REMOVE AN ENEMY SHIP FROM THE PLANET ORBIT
+    {
+        if (enemyOrbitingShips.Contains(ship))
+        {
+            enemyOrbitingShips.Remove(ship);
         }
     }
 
