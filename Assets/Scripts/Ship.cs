@@ -15,9 +15,9 @@ public class Ship : MonoBehaviour
     [Header("Orbit Elements")]
     Vector3 desiredPosition;
     public float orbitRadius;
-    float radiusSpeed = 0.1f;
+    float radiusSpeed = 0.3f;
     float rotationSpeed;
-    float orbitWiggle = 2;
+    float orbitWiggle = 5;
 
     [Header("Transfer Elements")]
     public Star destiny;
@@ -111,11 +111,9 @@ public class Ship : MonoBehaviour
             {
                 destiny.AddShip(this);
             }
-
-            orbiting = true;
-            launching = false;
+            
             orbitalParent = destiny;
-
+            Creation();
         }
     }
 
@@ -123,7 +121,7 @@ public class Ship : MonoBehaviour
 
     #region SHIP METHODS
 
-    public void Creation() //SET POSITION AND ROTATION TO BE CREATED
+    public void Creation() //SET OR RESET SHIP VALUES
     {
         orbiting = true;
         launching = false;
@@ -131,7 +129,7 @@ public class Ship : MonoBehaviour
 
         rotationSpeed = Random.Range(30, 70);
         launchTime = Random.Range(0.05f, 0.25f);
-        speed = Random.Range(1, 1.5f);
+        speed = Random.Range(1.2f, 1.4f);
         orbitRadius = Random.Range(orbitalParent.orbitDistance - 0.25f, orbitalParent.orbitDistance + 0.25f);
     }
 
