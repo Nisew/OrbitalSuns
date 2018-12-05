@@ -62,19 +62,27 @@ public class SpaceManager : MonoBehaviour
                 }
                 else if(hit.collider.tag == "Star")
                 {
-                    if(hit.collider.gameObject != selectedStar) //TRANSFER SHIPS TO CLICKED STAR
+                    if(hit.collider.gameObject != selectedStar)
                     {
                         if(!firstClick)
                         {
                             selectedTargetStar = hit.collider.gameObject;
-                            clickTime = 0;
                             firstClick = true;
+                            selectedStar.GetComponent<Star>().LaunchShips(false, selectedTargetStar.GetComponent<Star>()); //TRANSFER HALF SHIPS
                         }
-                        else
+                        else if(hit.collider.gameObject == selectedTargetStar && firstClick)
                         {
                             firstClick = false;
                             clickTime = 0;
                             selectedStar.GetComponent<Star>().LaunchShips(true, hit.collider.GetComponent<Star>()); //TRANSFER ALL SHIPS
+                            selectedStar = null;
+                            selectedTargetStar = null;
+                        }
+                        else if(hit.collider.gameObject != selectedTargetStar && firstClick)
+                        {
+                            selectedTargetStar = hit.collider.gameObject;
+                            clickTime = 0;
+                            selectedStar.GetComponent<Star>().LaunchShips(false, selectedTargetStar.GetComponent<Star>()); //TRANSFER HALF SHIPS
                         }
                     }
                 }
@@ -88,7 +96,6 @@ public class SpaceManager : MonoBehaviour
                 {
                     firstClick = false;
                     clickTime = 0;
-                    selectedStar.GetComponent<Star>().LaunchShips(false, selectedTargetStar.GetComponent<Star>()); //TRANSFER HALF SHIPS
                 }
             }
         }

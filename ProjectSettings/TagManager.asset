@@ -7,6 +7,7 @@ TagManager:
   - Star
   - Ship
   - Space
+  - BirthPoint
   layers:
   - Default
   - TransparentFX

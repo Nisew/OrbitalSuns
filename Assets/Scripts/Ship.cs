@@ -11,6 +11,8 @@ public class Ship : MonoBehaviour
     public bool orbiting;
     public int player;
     public float life;
+    public float destructionTime = 2;
+    public bool crashed;
 
     [Header("Orbit Elements")]
     Vector3 desiredPosition;
@@ -18,6 +20,7 @@ public class Ship : MonoBehaviour
     float radiusSpeed = 0.3f;
     float rotationSpeed;
     float orbitWiggle = 5;
+    int orbitDirection;
 
     [Header("Transfer Elements")]
     public Star destiny;
@@ -36,6 +39,16 @@ public class Ship : MonoBehaviour
         if(orbiting) //IN ORBIT
         {
             Orbit();
+
+            if(crashed)
+            {
+                destructionTime -= Time.deltaTime;
+
+                if(destructionTime <= 0)
+                {
+                    Destruction();
+                }
+            }
         }
 
         if(launching) //IN INTERSTELLAR SPACE
@@ -59,14 +72,32 @@ public class Ship : MonoBehaviour
 
     #region ORBIT METHODS
 
-    public void SetOrbit() //WIGGLE ORBITING
+    public void SetOrbitDirection() //ORBITING CLOCKWISE OR NOT
+    {
+        Vector2 difference = (Vector2)orbitalParent.transform.position - new Vector2(transform.position.x, transform.position.y);
+        float rotationZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
+
+        int random = Random.Range(0, 2);
+        if (random == 0)
+        {
+            orbitDirection = 1;
+            transform.rotation = Quaternion.Euler(0.0f, 0.0f, rotationZ - 180);
+        }
+        else
+        {
+            orbitDirection = -1;
+            transform.rotation = Quaternion.Euler(0.0f, 0.0f, rotationZ);
+        }
+    }
+
+    public void SetOrbitRadius() //WIGGLE ORBITING
     {
         orbitRadius = Random.Range(orbitalParent.orbitDistance - 0.25f, orbitalParent.orbitDistance + 0.25f);
     }
 
     public void Orbit() //FREE ORBITING AROUND A STAR
     {
-        transform.RotateAround(orbitalParent.transform.position, new Vector3(0, 0, -1), rotationSpeed * Time.deltaTime);
+        transform.RotateAround(orbitalParent.transform.position, new Vector3(0, 0, orbitDirection), rotationSpeed * Time.deltaTime);
         desiredPosition = (transform.position - orbitalParent.transform.position).normalized * orbitRadius + orbitalParent.transform.position;
         transform.position = Vector2.MoveTowards(transform.position, desiredPosition, Time.deltaTime * radiusSpeed);
 
@@ -74,8 +105,8 @@ public class Ship : MonoBehaviour
 
         if(orbitWiggle <= 0)
         {
-            SetOrbit();
-            orbitWiggle = 1;
+            SetOrbitRadius();
+            orbitWiggle = 5;
         }
     }
 
@@ -99,20 +130,18 @@ public class Ship : MonoBehaviour
 
         if(Vector2.Distance(transform.position, destiny.transform.position) < destiny.orbitDistance)
         {
-            Vector2 difference = (Vector2)destiny.gameObject.transform.position - new Vector2(transform.position.x, transform.position.y);
-            float rotationZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0.0f, 0.0f, rotationZ);
 
-            if(destiny.player != orbitalParent.player)
+            if (destiny.player != player)
             {
                 destiny.AddEnemyShip(this);
             }
-            else if(destiny.player == orbitalParent.player)
+            else if(destiny.player == player)
             {
                 destiny.AddShip(this);
             }
             
             orbitalParent = destiny;
+            SetOrbitDirection();
             Creation();
         }
     }
@@ -121,18 +150,13 @@ public class Ship : MonoBehaviour
 
     #region SHIP METHODS
 
-    public void Creation() //SET OR RESET SHIP VALUES
+    public void Creation() //SET SHIP FOR PLACEMENT
     {
         orbiting = true;
         launching = false;
         launched = false;
-
-        rotationSpeed = Random.Range(30, 70);
-        launchTime = Random.Range(0.05f, 0.25f);
-        speed = Random.Range(1.2f, 1.4f);
-        orbitRadius = Random.Range(orbitalParent.orbitDistance - 0.25f, orbitalParent.orbitDistance + 0.25f);
     }
-
+    
     public void CrushAnotherShip(Ship ship) //SHIPS MAKING WAR
     {
         float a = ship.life;
@@ -143,6 +167,16 @@ public class Ship : MonoBehaviour
     public void Destruction() //DESACTIVATE THE SHIP
     {
         this.gameObject.SetActive(false);
+    }
+
+    public void ResetRandom() //RESET SHIP RANDOM VALUES
+    {
+        SetOrbitDirection();
+        rotationSpeed = Random.Range(30, 70);
+        launchTime = Random.Range(0.05f, 0.25f);
+        speed = Random.Range(1.2f, 1.4f);
+        destructionTime = Random.Range(1, 2);
+        orbitRadius = Random.Range(orbitalParent.orbitDistance - 0.25f, orbitalParent.orbitDistance + 0.25f);
     }
 
     #endregion

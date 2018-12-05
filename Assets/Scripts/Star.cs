@@ -9,11 +9,12 @@ public class Star : MonoBehaviour
     float time;
 
     [Header("Star Elements")]
-    public Vector2[] spawnPoints = new Vector2[8];
     public int orbitSaturation;
     public float orbitDistance;
+    public float bornDistance;
     public int player = 0;
     public float energyProduction;
+    public Transform birthPoint;
 
     [Header("Ship Elements")]
     public List<Ship> orbitingShips = new List<Ship>();
@@ -23,7 +24,7 @@ public class Star : MonoBehaviour
 
 	void Start ()
     {
-        SetSpawnPoints();
+        GetBirthPoint();
     }
 	
 	void Update ()
@@ -73,22 +74,28 @@ public class Star : MonoBehaviour
         ship.SetActive(true);
         ship.GetComponent<Ship>().player = player;
         ship.GetComponentInChildren<SpriteRenderer>().color = spaceManager.TintShips(player);
-
-        int i = Random.Range(0, 7);
-
-        ship.transform.position = spawnPoints[i];
-        if (i == 0) ship.transform.localRotation = Quaternion.Euler(0, 0, -90);
-        if (i == 1) ship.transform.localRotation = Quaternion.Euler(0, 0, -135);
-        if (i == 2) ship.transform.localRotation = Quaternion.Euler(0, 0, -180);
-        if (i == 3) ship.transform.localRotation = Quaternion.Euler(0, 0, -225);
-        if (i == 4) ship.transform.localRotation = Quaternion.Euler(0, 0, -270);
-        if (i == 5) ship.transform.localRotation = Quaternion.Euler(0, 0, -315);
-        if (i == 6) ship.transform.localRotation = Quaternion.Euler(0, 0, 0);
-        if (i == 7) ship.transform.localRotation = Quaternion.Euler(0, 0, 45);
-
+        birthPoint.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 360));
+        ship.gameObject.transform.position = birthPoint.GetChild(0).position;        
         ship.GetComponent<Ship>().orbitalParent = this;
+        ship.GetComponent<Ship>().ResetRandom();
         ship.GetComponent<Ship>().Creation();
         AddShip(ship.GetComponent<Ship>());
+    }
+
+    public void GetBirthPoint() //SET THE POSITION OF THE BIRTH OBJECT
+    {
+        if (birthPoint == null)
+        {
+            foreach (Transform child in this.gameObject.transform)
+            {
+                if (child.tag == "BirthPoint")
+                {
+                    birthPoint = child.GetChild(0);
+                    birthPoint.transform.position = new Vector2(bornDistance, 0);
+                    birthPoint = child.gameObject.transform;
+                }
+            }
+        }
     }
 
     public void War() //FIGHT AGAINST INVASORS
@@ -115,7 +122,7 @@ public class Star : MonoBehaviour
 
                 if (enemyOrbitingShips[i].life <= 0) //ENEMY SHIP DEAD
                 {
-                    enemyOrbitingShips[i].Destruction();
+                    enemyOrbitingShips[i].crashed = true;
                     RemoveEnemyShip(enemyOrbitingShips[i]);
                 }
 
@@ -123,7 +130,7 @@ public class Star : MonoBehaviour
 
                 if (orbitingShips[i].life <= 0) //ALLY SHIP DEAD
                 {
-                    orbitingShips[i].Destruction();
+                    orbitingShips[i].crashed = true;
                     RemoveShip(orbitingShips[i]);
                 }
             }
@@ -175,33 +182,14 @@ public class Star : MonoBehaviour
         spaceManager = universe;
     }
 
-    void SetSpawnPoints()
-    {
-        spawnPoints[0] = new Vector2(transform.position.x, transform.position.y + 0.3f);
-        spawnPoints[1] = new Vector2(transform.position.x + 0.2f, transform.position.y + 0.2f);
-        spawnPoints[2] = new Vector2(transform.position.x + 0.3f, transform.position.y);
-        spawnPoints[3] = new Vector2(transform.position.x + 0.2f, transform.position.y - 0.2f);
-        spawnPoints[4] = new Vector2(transform.position.x, transform.position.y - 0.3f);
-        spawnPoints[5] = new Vector2(transform.position.x - 0.2f, transform.position.y - 0.2f);
-        spawnPoints[6] = new Vector2(transform.position.x - 0.3f, transform.position.y);
-        spawnPoints[7] = new Vector2(transform.position.x - 0.2f, transform.position.y + 0.2f);
-    }
-
     #endregion
 
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-
         Gizmos.DrawWireSphere(transform.position, orbitDistance);
-
-        Gizmos.DrawIcon(spawnPoints[0], "");
-        Gizmos.DrawIcon(spawnPoints[1], "");
-        Gizmos.DrawIcon(spawnPoints[2], "");
-        Gizmos.DrawIcon(spawnPoints[3], "");
-        Gizmos.DrawIcon(spawnPoints[4], "");
-        Gizmos.DrawIcon(spawnPoints[5], "");
-        Gizmos.DrawIcon(spawnPoints[6], "");
-        Gizmos.DrawIcon(spawnPoints[7], "");
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, bornDistance);
     }
+
 }
