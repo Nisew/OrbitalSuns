@@ -29,76 +29,12 @@ public class SpaceManager : MonoBehaviour
 
 	void Start()
     {
-        CreateFewShips(1);
+        CreateFewShips(5);
 	}
 	
 	void Update()
     {
-		if(selectedStar == null) //SELECT A STAR IF NONE IS SELECTED
-        {
-            if(Input.GetMouseButtonDown(0))
-            {
-                RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-
-                if(hit.collider != null)
-                {
-                    if(hit.collider.tag == "Star")
-                    {
-                        selectedStar = hit.collider.gameObject;
-                    }
-                }
-            }
-        }
-
-        if(selectedStar != null)
-        {
-            if (Input.GetMouseButtonDown(0))
-            {
-                RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-
-                if (hit.collider == null) //DESELECTS A STAR IF ONE IS SELECTED
-                {
-                    selectedStar = null;
-                }
-                else if(hit.collider.tag == "Star")
-                {
-                    if(hit.collider.gameObject != selectedStar)
-                    {
-                        if(!firstClick)
-                        {
-                            selectedTargetStar = hit.collider.gameObject;
-                            firstClick = true;
-                            selectedStar.GetComponent<Star>().LaunchShips(false, selectedTargetStar.GetComponent<Star>()); //TRANSFER HALF SHIPS
-                        }
-                        else if(hit.collider.gameObject == selectedTargetStar && firstClick)
-                        {
-                            firstClick = false;
-                            clickTime = 0;
-                            selectedStar.GetComponent<Star>().LaunchShips(true, hit.collider.GetComponent<Star>()); //TRANSFER ALL SHIPS
-                            selectedStar = null;
-                            selectedTargetStar = null;
-                        }
-                        else if(hit.collider.gameObject != selectedTargetStar && firstClick)
-                        {
-                            selectedTargetStar = hit.collider.gameObject;
-                            clickTime = 0;
-                            selectedStar.GetComponent<Star>().LaunchShips(false, selectedTargetStar.GetComponent<Star>()); //TRANSFER HALF SHIPS
-                        }
-                    }
-                }
-            }
-
-            if(firstClick)
-            {
-                clickTime += Time.deltaTime;
-
-                if(clickTime >= doubleClickTime)
-                {
-                    firstClick = false;
-                    clickTime = 0;
-                }
-            }
-        }
+        CheckSelection();
 	}
 
     #region BIG BANG METHODS
@@ -144,7 +80,7 @@ public class SpaceManager : MonoBehaviour
                 ship = totalShips[i];
                 break;
             }
-            if(totalShips[totalShips.Count-1].activeInHierarchy)
+            else if(i >= totalShips.Count - 1 && totalShips[i].activeInHierarchy)
             {
                 ship = Instantiate(shipPrefab);
                 totalShips.Add(ship);
@@ -163,6 +99,92 @@ public class SpaceManager : MonoBehaviour
         if (player == 2) shipColor = player2;
 
         return shipColor;
+    }
+
+    #endregion
+
+    #region SELECTION METHODS
+
+    void CheckSelection() //SELECTION OF STARS
+    {
+        if (selectedStar == null) //SELECT A STAR IF NONE IS SELECTED
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+
+                if (hit.collider != null)
+                {
+                    if (hit.collider.tag == "Star" && hit.collider.GetComponent<Star>().player == 1)
+                    {
+                        selectedStar = hit.collider.gameObject;
+                        selectedStar.GetComponent<Star>().Selected(true);
+                    }
+                }
+            }
+        }
+
+        if (selectedStar != null)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+
+                if (hit.collider == null) //DESELECTS A STAR IF ONE IS SELECTED
+                {
+                    selectedStar.GetComponent<Star>().Selected(false);
+                    selectedStar = null;
+                }
+                else if (hit.collider.tag == "Star")
+                {
+                    if (hit.collider.gameObject != selectedStar)
+                    {
+                        if (!firstClick)
+                        {
+                            selectedTargetStar = hit.collider.gameObject;
+                            firstClick = true;
+                            selectedStar.GetComponent<Star>().LaunchShips(false, selectedTargetStar.GetComponent<Star>()); //TRANSFER HALF SHIPS
+                        }
+                        else if (hit.collider.gameObject == selectedTargetStar && firstClick)
+                        {
+                            firstClick = false;
+                            clickTime = 0;
+                            selectedStar.GetComponent<Star>().LaunchShips(true, hit.collider.GetComponent<Star>()); //TRANSFER ALL SHIPS
+                            selectedStar.GetComponent<Star>().Selected(false);
+                            selectedStar = null;
+                            selectedTargetStar = null;
+                        }
+                        else if (hit.collider.gameObject != selectedTargetStar && firstClick)
+                        {
+                            selectedTargetStar = hit.collider.gameObject;
+                            clickTime = 0;
+                            selectedStar.GetComponent<Star>().LaunchShips(false, selectedTargetStar.GetComponent<Star>()); //TRANSFER HALF SHIPS
+                        }
+                    }
+                }
+            }
+
+            if (firstClick)
+            {
+                clickTime += Time.deltaTime;
+
+                if (clickTime >= doubleClickTime)
+                {
+                    firstClick = false;
+                    clickTime = 0;
+                }
+            }
+        }
+    }
+
+    public Color GetPlayerColor(int player)
+    {
+        Color playerColor;
+
+        if (player == 1) playerColor = player1;
+        else playerColor = player2;
+
+        return playerColor;
     }
 
     #endregion

@@ -142,6 +142,7 @@ public class Ship : MonoBehaviour
             
             orbitalParent = destiny;
             SetOrbitDirection();
+            ResetRandom();
             Creation();
         }
     }
@@ -155,6 +156,7 @@ public class Ship : MonoBehaviour
         orbiting = true;
         launching = false;
         launched = false;
+        crashed = false;
     }
     
     public void CrushAnotherShip(Ship ship) //SHIPS MAKING WAR
@@ -174,7 +176,7 @@ public class Ship : MonoBehaviour
         SetOrbitDirection();
         rotationSpeed = Random.Range(30, 70);
         launchTime = Random.Range(0.05f, 0.25f);
-        speed = Random.Range(1.2f, 1.4f);
+        speed = Random.Range(2, 2.5f);
         destructionTime = Random.Range(1, 2);
         orbitRadius = Random.Range(orbitalParent.orbitDistance - 0.25f, orbitalParent.orbitDistance + 0.25f);
     }

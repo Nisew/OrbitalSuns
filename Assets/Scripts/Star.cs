@@ -6,7 +6,10 @@ public class Star : MonoBehaviour
 {
     [Header("Space Elements")]
     SpaceManager spaceManager;
+    SpriteRenderer starLight;
+    Transform starLightObject;
     float time;
+    float lightSpeed;
 
     [Header("Star Elements")]
     public int orbitSaturation;
@@ -25,6 +28,7 @@ public class Star : MonoBehaviour
 	void Start ()
     {
         GetBirthPoint();
+        GetLightObject();
     }
 	
 	void Update ()
@@ -44,6 +48,8 @@ public class Star : MonoBehaviour
         {
             War();
         }
+
+        starLightObject.Rotate(0, 0, lightSpeed);
 	}
 
     #region STAR METHODS
@@ -82,27 +88,12 @@ public class Star : MonoBehaviour
         AddShip(ship.GetComponent<Ship>());
     }
 
-    public void GetBirthPoint() //SET THE POSITION OF THE BIRTH OBJECT
-    {
-        if (birthPoint == null)
-        {
-            foreach (Transform child in this.gameObject.transform)
-            {
-                if (child.tag == "BirthPoint")
-                {
-                    birthPoint = child.GetChild(0);
-                    birthPoint.transform.position = new Vector2(bornDistance, 0);
-                    birthPoint = child.gameObject.transform;
-                }
-            }
-        }
-    }
-
     public void War() //FIGHT AGAINST INVASORS
     {
         if (orbitingShips.Count == 0) //LOSE
         {
             player = enemyOrbitingShips[0].player;
+            starLight.color = spaceManager.GetPlayerColor(player);
 
             for (int i = 0; i < enemyOrbitingShips.Count; i++)
             {
@@ -136,6 +127,40 @@ public class Star : MonoBehaviour
             }
         }
     } 
+
+    public void GetBirthPoint() //SET THE POSITION OF THE BIRTH OBJECT
+    {
+        if (birthPoint == null)
+        {
+            foreach (Transform child in this.gameObject.transform)
+            {
+                if (child.tag == "BirthPoint")
+                {
+                    birthPoint = child.GetChild(0);
+                    birthPoint.transform.position = new Vector2(this.transform.position.x + bornDistance, this.transform.position.y);
+                    birthPoint = child.gameObject.transform;
+                }
+            }
+        }
+    }
+
+    public void GetLightObject()
+    {
+        foreach (Transform child in this.gameObject.transform)
+        {
+            if (child.tag == "Light")
+            {
+                starLight = child.GetComponent<SpriteRenderer>();
+                starLightObject = starLight.gameObject.transform;
+                starLight.color = spaceManager.GetPlayerColor(player);
+
+                int i = Random.Range(0, 2);
+                if (i == 1) lightSpeed = Random.Range(0.05f, 0.1f);
+                else lightSpeed = Random.Range(-0.05f, -0.1f);
+
+            }
+        }
+    }
 
     #endregion
 
@@ -180,6 +205,18 @@ public class Star : MonoBehaviour
     public void MeetUniverse(SpaceManager universe)
     {
         spaceManager = universe;
+    }
+
+    public void Selected(bool selected)
+    {
+        if(selected)
+        {
+            starLight.gameObject.GetComponent<Animator>().SetTrigger("Selection");
+        }
+        else
+        {
+            starLight.gameObject.GetComponent<Animator>().SetTrigger("Deselection");
+        }
     }
 
     #endregion
