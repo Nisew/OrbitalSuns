@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class SpaceManager : MonoBehaviour
 {
+    [Header("UI Elements")]
+    public UIMenu UIScript;
+
     [Header("Space Elements")]
     float doubleClickTime = 0.5f;
     bool firstClick;
@@ -11,6 +14,7 @@ public class SpaceManager : MonoBehaviour
 
     [Header("Star Elements")]
     public List<Star> starList;
+    public int starPower;
 
     [Header("Ship Elements")]
     public List<GameObject> totalShips;
@@ -185,6 +189,16 @@ public class SpaceManager : MonoBehaviour
         else playerColor = player2;
 
         return playerColor;
+    }
+
+    #endregion
+
+    #region UI METHODS
+
+    public void UpdateStarPower(float power)
+    {
+        starPower += Mathf.RoundToInt(power);
+        UIScript.UpdateStarPower(starPower);
     }
 
     #endregion

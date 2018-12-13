@@ -9,6 +9,7 @@ public class Star : MonoBehaviour
     SpriteRenderer starLight;
     Transform starLightObject;
     float time;
+    public float productionTime;
     float lightSpeed;
 
     [Header("Star Elements")]
@@ -16,7 +17,9 @@ public class Star : MonoBehaviour
     public float orbitDistance;
     public float bornDistance;
     public int player = 0;
+    public float totalProduction;
     public float energyProduction;
+    public float shipProduction;
     public Transform birthPoint;
 
     [Header("Ship Elements")]
@@ -37,14 +40,22 @@ public class Star : MonoBehaviour
         {
             time += Time.deltaTime;
 
-            if(time >= energyProduction)
+            if(time >= totalProduction - shipProduction)
             {
                 CreateShip();
                 time = 0;
             }
         }
 
-        if(enemyOrbitingShips.Count > 0) //FIGHT!
+        productionTime += Time.deltaTime;
+
+        if(productionTime >= 1)
+        {
+            spaceManager.UpdateStarPower(energyProduction);
+            productionTime = 0;
+        }
+
+        if (enemyOrbitingShips.Count > 0) //FIGHT!
         {
             War();
         }
@@ -217,6 +228,12 @@ public class Star : MonoBehaviour
         {
             starLight.gameObject.GetComponent<Animator>().SetTrigger("Deselection");
         }
+    }
+
+    public void ProductionSlider(float value)
+    {
+        shipProduction = value;
+        energyProduction = totalProduction - shipProduction;
     }
 
     #endregion
