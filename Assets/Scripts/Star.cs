@@ -17,10 +17,12 @@ public class Star : MonoBehaviour
     public float orbitDistance;
     public float bornDistance;
     public int player = 0;
+    public Transform birthPoint;
+
+    [Header("UI Elements")]
     public float totalProduction;
     public float energyProduction;
     public float shipProduction;
-    public Transform birthPoint;
 
     [Header("Ship Elements")]
     public List<Ship> orbitingShips = new List<Ship>();
@@ -175,6 +177,21 @@ public class Star : MonoBehaviour
 
     #endregion
 
+    #region UI METHODS
+
+    public float[] PassInfoToUI()
+    {
+        float[] values = new float[3];
+
+        values[0] = totalProduction;
+        values[1] = shipProduction;
+        values[2] = energyProduction;
+
+        return values;
+    }
+
+    #endregion
+
     #region LIST METHODS
 
     public void AddShip(Ship ship) //ADD A SHIP TO THE PLANET ORBIT
@@ -232,8 +249,21 @@ public class Star : MonoBehaviour
 
     public void ProductionSlider(float value)
     {
-        shipProduction = value;
-        energyProduction = totalProduction - shipProduction;
+        if(value == 0)
+        {
+            shipProduction = 0;
+            energyProduction = totalProduction;
+        }
+        if(value == 100)
+        {
+            shipProduction = totalProduction;
+            energyProduction = 0;
+        }
+        if(value > 0 && value < 100)
+        {
+            shipProduction = (totalProduction/100) * value;
+            energyProduction = (totalProduction/100) * (100 - value);
+        }
     }
 
     #endregion
