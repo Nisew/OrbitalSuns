@@ -113,7 +113,7 @@ Transform:
   m_GameObject: {fileID: 1135372880807446}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 5, y: 5, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4049778205413382}
   m_Father: {fileID: 4424537829291460}
@@ -126,7 +126,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1158467796754878}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 20.97, y: 11.57, z: 0.0044280067}
+  m_LocalPosition: {x: 27.6, y: 15.6, z: 0.0044280067}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4276852964198678}
@@ -202,7 +202,7 @@ Animator:
   m_GameObject: {fileID: 1942156019102718}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ba29f6c0eb4740c4e80eae33813b6b6b, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -223,9 +223,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   newSatellitePoint: {fileID: 4963710312502122}
   newSatellitePointChild: {fileID: 4630109420585732}
-  civilization: 1
-  temperature: 0
+  minOrbitRadius: 1.14
+  maxOrbitRadius: 2.11
+  civilization: 2
   type: 2
+  satellites: []
   starSprite: {fileID: 212026134438944802}
   lightSprite: {fileID: 212705949409287906}
 --- !u!212 &212026134438944802

@@ -185,7 +185,7 @@ Animator:
   m_GameObject: {fileID: 1442391980313066}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ba29f6c0eb4740c4e80eae33813b6b6b, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -223,9 +223,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   newSatellitePoint: {fileID: 4025169234970846}
   newSatellitePointChild: {fileID: 4916882545098690}
-  civilization: 1
-  temperature: 0
+  minOrbitRadius: 1.24
+  maxOrbitRadius: 2.38
+  civilization: 2
   type: 0
+  satellites: []
   starSprite: {fileID: 212656212608765050}
   lightSprite: {fileID: 212162464023715844}
 --- !u!212 &212162464023715844

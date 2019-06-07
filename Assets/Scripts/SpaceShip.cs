@@ -4,7 +4,6 @@ using System.Collections;
 public class SpaceShip : MonoBehaviour
 {
     [Header("UNIVERSE LAWS")]
-    Star orbitalParent;
     float time;
 
     [Header("SPACESHIP")]
@@ -18,10 +17,12 @@ public class SpaceShip : MonoBehaviour
     [SerializeField] State shipState;
 
     [Header("ORBIT")]
+    Star orbitalParent;
     Vector3 desiredPosition;
     float orbitRadius;
+    float minOrbitRadius;
+    float maxOrbitRadius;
     float orbitSpeed = 75;
-    float orbitWiggle;
     float wiggleSpeed = 0.5f;
     int orbitDirection;
 
@@ -57,56 +58,11 @@ public class SpaceShip : MonoBehaviour
         sprite.color = color;
     }
 
-    public void Create(Star parent, Vector3 pos, int civ, float _life, float _minOrbitRadius, float _maxOrbitRadius)
-    {
-        orbitalParent = parent;
-        desiredPosition = pos;
-        civilization = civ;
-
-        SetOrbit(_minOrbitRadius, _maxOrbitRadius);
-        SetLife(_life);
-        SetPosition();
-        this.gameObject.SetActive(true);
-    }
-
-    public void SetPosition()
-    {
-        gameObject.transform.position = desiredPosition;
-    }
-
-    public void SetOrbit(float _orbitRadius, float _maxOrbitRadius)
-    {
-        if (orbitalParent.typeOfStar() == "Blue")
-        {
-            orbitSpeed = Random.Range(60, 80);
-            orbitRadius = Random.Range(_orbitRadius, _maxOrbitRadius);
-        }
-
-        if (orbitalParent.typeOfStar() == "Yellow")
-        {
-            orbitSpeed = Random.Range(40, 60);
-            orbitRadius = Random.Range(_orbitRadius, _maxOrbitRadius);
-        }
-
-        if (orbitalParent.typeOfStar() == "Red")
-        {
-            orbitSpeed = Random.Range(15, 35);
-            orbitRadius = Random.Range(_orbitRadius, _maxOrbitRadius);
-        }
-        orbitWiggle = orbitRadius;
-    }
-
-    public void SetLife(float _life)
-    {
-        life = _life;
-    }
+    #region UPDATE METHODS
 
     void Inactive()
     {
-        if(this.gameObject.activeInHierarchy)
-        {
-            SetOrbiting(orbitalParent);
-        }
+        
     }
 
     void Orbiting()
@@ -120,7 +76,7 @@ public class SpaceShip : MonoBehaviour
         if(time >= 5)
         {
             time = 0;
-            orbitRadius = Random.Range(orbitWiggle - 0.25f, orbitWiggle + 0.25f);
+            orbitRadius = Random.Range(minOrbitRadius, maxOrbitRadius);
         }
 
     }
@@ -137,7 +93,7 @@ public class SpaceShip : MonoBehaviour
 
             if (Vector2.Distance(transform.position, destiny.transform.position) < destiny.maxOrbitRadius)
             {
-                if (destiny.civilization != civilization)
+                if (destiny.GetCiv() != civilization)
                 {
                     destiny.AddInEnemyArmy(this);
                 }
@@ -146,22 +102,52 @@ public class SpaceShip : MonoBehaviour
                     destiny.AddInArmy(this);
                 }
 
-                SetOrbiting(destiny);
+                NewParent(destiny);
+                SetOrbitRadius();
+                SetOrbiting();
                 time = 0;
             }
         }
     }
+
+    #endregion
+
+    public void Create()
+    {
+        gameObject.transform.localPosition = orbitalParent.GetBirthPoint();
+        civilization = orbitalParent.GetCiv();
+        SetOrbiting();
+        this.gameObject.SetActive(true);
+    }
+
+    public void NewParent(Star parent)
+    {
+        orbitalParent = parent;
+        minOrbitRadius = parent.GetMinOrbitRadius();
+        maxOrbitRadius = parent.GetMaxOrbitRadius();
+        civilization = parent.GetCiv();
+        SetOrbitRadius();
+    }
+
+    public void SetOrbitRadius()
+    {
+        orbitRadius = Random.Range(minOrbitRadius, maxOrbitRadius);
+    }
+
+    public void SetLife(float _life)
+    {
+        life = _life;
+    }
+
+    #region SET STATE
 
     void SetInactive()
     {
         this.gameObject.SetActive(false);
     }
 
-    void SetOrbiting(Star _orbitalParent)
+    void SetOrbiting()
     {
-        orbitalParent = _orbitalParent;
-        SetOrbit(orbitalParent.minOrbitRadius, orbitalParent.maxOrbitRadius);
-
         Vector2 difference = (Vector2)orbitalParent.transform.position - new Vector2(transform.position.x, transform.position.y);
         float rotationZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
 
@@ -190,155 +176,157 @@ public class SpaceShip : MonoBehaviour
         shipState = State.Travelling;
     }
 
-/*
-    void Update()
-    {
-        if(orbiting) //IN ORBIT
+    #endregion
+
+    /*
+        void Update()
         {
-            Orbit();
-
-            if(crashed)
+            if(orbiting) //IN ORBIT
             {
-                destructionTime -= Time.deltaTime;
+                Orbit();
 
-                if(destructionTime <= 0)
+                if(crashed)
                 {
-                    Destruction();
+                    destructionTime -= Time.deltaTime;
+
+                    if(destructionTime <= 0)
+                    {
+                        Destruction();
+                    }
+                }
+            }
+
+            if(launching) //IN INTERSTELLAR SPACE
+            {
+                if(launchTime > 0)
+                {
+                    launchTime -= Time.deltaTime;
+                }
+                else
+                {
+                    if(!launched)
+                    {
+                        launched = true;
+                        orbitalParent.RemoveShip(this);
+                    }
+
+                    Transfer();
                 }
             }
         }
 
-        if(launching) //IN INTERSTELLAR SPACE
+        #region ORBIT METHODS
+
+        public void SetOrbitDirection() //ORBITING CLOCKWISE OR NOT
         {
-            if(launchTime > 0)
+            Vector2 difference = (Vector2)orbitalParent.transform.position - new Vector2(transform.position.x, transform.position.y);
+            float rotationZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
+
+            int random = Random.Range(0, 2);
+            if (random == 0)
             {
-                launchTime -= Time.deltaTime;
+                orbitDirection = 1;
+                transform.rotation = Quaternion.Euler(0.0f, 0.0f, rotationZ - 180);
             }
             else
             {
-                if(!launched)
+                orbitDirection = -1;
+                transform.rotation = Quaternion.Euler(0.0f, 0.0f, rotationZ);
+            }
+        }
+
+        public void SetOrbitRadius() //WIGGLE ORBITING
+        {
+            orbitRadius = Random.Range(orbitalParent.orbitDistance - 0.25f, orbitalParent.orbitDistance + 0.25f);
+        }
+
+        public void Orbit() //FREE ORBITING AROUND A STAR
+        {
+            transform.RotateAround(orbitalParent.transform.position, new Vector3(0, 0, orbitDirection), rotationSpeed * Time.deltaTime);
+            desiredPosition = (transform.position - orbitalParent.transform.position).normalized * orbitRadius + orbitalParent.transform.position;
+            transform.position = Vector2.MoveTowards(transform.position, desiredPosition, Time.deltaTime * radiusSpeed);
+
+            orbitWiggle -= Time.deltaTime;
+
+            if(orbitWiggle <= 0)
+            {
+                SetOrbitRadius();
+                orbitWiggle = 5;
+            }
+        }
+
+        #endregion
+
+        #region INTERSTELLAR TRAVEL METHODS
+
+        public void Launch(Star destination) //SET DESTINY AND ROTATION TO ANOTHER STAR
+        {
+            destiny = destination;
+            Vector2 difference = (Vector2)destiny.gameObject.transform.position - new Vector2(transform.position.x, transform.position.y);
+            float rotationZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0.0f, 0.0f, rotationZ - 90);
+            orbiting = false;
+            launching = true;
+        }
+
+        public void Transfer() //MOVEMENT FROM ONE STAR TO ANOTHER
+        {
+            transform.position = Vector2.MoveTowards(transform.position, destiny.gameObject.transform.position, Time.deltaTime * speed);
+
+            if(Vector2.Distance(transform.position, destiny.transform.position) < destiny.orbitDistance)
+            {
+
+                if (destiny.player != player)
                 {
-                    launched = true;
-                    orbitalParent.RemoveShip(this);
+                    destiny.AddEnemyShip(this);
+                }
+                else if(destiny.player == player)
+                {
+                    destiny.AddShip(this);
                 }
 
-                Transfer();
+                orbitalParent = destiny;
+                SetOrbitDirection();
+                ResetRandom();
+                Creation();
             }
         }
-    }
 
-    #region ORBIT METHODS
+        #endregion
 
-    public void SetOrbitDirection() //ORBITING CLOCKWISE OR NOT
-    {
-        Vector2 difference = (Vector2)orbitalParent.transform.position - new Vector2(transform.position.x, transform.position.y);
-        float rotationZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
+        #region SHIP METHODS
 
-        int random = Random.Range(0, 2);
-        if (random == 0)
+        public void Creation() //SET SHIP FOR PLACEMENT
         {
-            orbitDirection = 1;
-            transform.rotation = Quaternion.Euler(0.0f, 0.0f, rotationZ - 180);
+            orbiting = true;
+            launching = false;
+            launched = false;
+            crashed = false;
         }
-        else
+
+        public void CrushAnotherShip(Ship ship) //SHIPS MAKING WAR
         {
-            orbitDirection = -1;
-            transform.rotation = Quaternion.Euler(0.0f, 0.0f, rotationZ);
+            float a = ship.life;
+            ship.life -= life;
+            life -= a;
         }
-    }
 
-    public void SetOrbitRadius() //WIGGLE ORBITING
-    {
-        orbitRadius = Random.Range(orbitalParent.orbitDistance - 0.25f, orbitalParent.orbitDistance + 0.25f);
-    }
-
-    public void Orbit() //FREE ORBITING AROUND A STAR
-    {
-        transform.RotateAround(orbitalParent.transform.position, new Vector3(0, 0, orbitDirection), rotationSpeed * Time.deltaTime);
-        desiredPosition = (transform.position - orbitalParent.transform.position).normalized * orbitRadius + orbitalParent.transform.position;
-        transform.position = Vector2.MoveTowards(transform.position, desiredPosition, Time.deltaTime * radiusSpeed);
-
-        orbitWiggle -= Time.deltaTime;
-
-        if(orbitWiggle <= 0)
+        public void Destruction() //DESACTIVATE THE SHIP
         {
-            SetOrbitRadius();
-            orbitWiggle = 5;
+            this.gameObject.SetActive(false);
         }
-    }
 
-    #endregion
-
-    #region INTERSTELLAR TRAVEL METHODS
-
-    public void Launch(Star destination) //SET DESTINY AND ROTATION TO ANOTHER STAR
-    {
-        destiny = destination;
-        Vector2 difference = (Vector2)destiny.gameObject.transform.position - new Vector2(transform.position.x, transform.position.y);
-        float rotationZ = Mathf.Atan2(difference.y, difference.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0.0f, 0.0f, rotationZ - 90);
-        orbiting = false;
-        launching = true;
-    }
-
-    public void Transfer() //MOVEMENT FROM ONE STAR TO ANOTHER
-    {
-        transform.position = Vector2.MoveTowards(transform.position, destiny.gameObject.transform.position, Time.deltaTime * speed);
-
-        if(Vector2.Distance(transform.position, destiny.transform.position) < destiny.orbitDistance)
+        public void ResetRandom() //RESET SHIP RANDOM VALUES
         {
-
-            if (destiny.player != player)
-            {
-                destiny.AddEnemyShip(this);
-            }
-            else if(destiny.player == player)
-            {
-                destiny.AddShip(this);
-            }
-            
-            orbitalParent = destiny;
             SetOrbitDirection();
-            ResetRandom();
-            Creation();
+            rotationSpeed = Random.Range(30, 70);
+            launchTime = Random.Range(0.05f, 0.25f);
+            speed = Random.Range(2, 2.5f);
+            destructionTime = Random.Range(1, 2);
+            orbitRadius = Random.Range(orbitalParent.orbitDistance - 0.25f, orbitalParent.orbitDistance + 0.25f);
         }
-    }
 
-    #endregion
-
-    #region SHIP METHODS
-
-    public void Creation() //SET SHIP FOR PLACEMENT
-    {
-        orbiting = true;
-        launching = false;
-        launched = false;
-        crashed = false;
-    }
-    
-    public void CrushAnotherShip(Ship ship) //SHIPS MAKING WAR
-    {
-        float a = ship.life;
-        ship.life -= life;
-        life -= a;
-    }
-
-    public void Destruction() //DESACTIVATE THE SHIP
-    {
-        this.gameObject.SetActive(false);
-    }
-
-    public void ResetRandom() //RESET SHIP RANDOM VALUES
-    {
-        SetOrbitDirection();
-        rotationSpeed = Random.Range(30, 70);
-        launchTime = Random.Range(0.05f, 0.25f);
-        speed = Random.Range(2, 2.5f);
-        destructionTime = Random.Range(1, 2);
-        orbitRadius = Random.Range(orbitalParent.orbitDistance - 0.25f, orbitalParent.orbitDistance + 0.25f);
-    }
-
-    #endregion
-    */
+        #endregion
+        */
 
 }

@@ -11,14 +11,19 @@ public class Star : MonoBehaviour
     [Header("STAR")]
     [SerializeField] Transform newSatellitePoint;
     [SerializeField] Transform newSatellitePointChild;
-    float newSatelliteRadius;
-    float minOrbitRadius;
+    public float minOrbitRadius;
     public float maxOrbitRadius;
     int maxShips;
-    public int civilization;
+    [SerializeField] int civilization;
+
+    [Header("CIVILIZATION STATS")]
+    float shipCost;
+    float shipAttack;
+    float shipLife;
+    float shipShield;
 
     [Header("STAR INFO")]
-    [SerializeField] float temperature;
+    float temperature;
     enum starType { Yellow, Blue, Red };
     [SerializeField] starType type;
 
@@ -58,15 +63,45 @@ public class Star : MonoBehaviour
         }
     }
 
+    public void CivShipStats(float _shipLife, float _shipCost, float _shipAttack, float _shipShield)
+    {
+        shipLife = _shipLife;
+        shipCost = _shipCost;
+        shipAttack = _shipAttack;
+        shipShield = _shipShield;
+    }
+
     void SpaceShip()
     {
         GameObject ship = universe.CreateSpaceShip(civilization);
         SpaceShip shipScript = ship.GetComponent<SpaceShip>();
 
         newSatellitePoint.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 360));
-        shipScript.Create(this, newSatellitePoint.GetChild(0).position, civilization, spaceShipLife, orbitRadius);
+        shipScript.NewParent(this);
+        shipScript.SetOrbitRadius();
+        shipScript.Create();
 
         AddInArmy(shipScript);
+    }
+
+    public int GetCiv()
+    {
+        return civilization;
+    }
+
+    public float GetMinOrbitRadius()
+    {
+        return minOrbitRadius;
+    }
+
+    public float GetMaxOrbitRadius()
+    {
+        return maxOrbitRadius;
+    }
+
+    public Vector3 GetBirthPoint()
+    {
+        return newSatellitePointChild.transform.localPosition;
     }
 
     #region LIST METHODS
@@ -143,13 +178,13 @@ public class Star : MonoBehaviour
 
     public void SetProperties(float _temperature, float _volume, float _energy)
     {
+        starSprite.transform.localScale = new Vector3(_volume, _volume, 1);
+        minOrbitRadius = minOrbitRadius * _volume;
+        maxOrbitRadius = maxOrbitRadius * _volume;
         temperature = _temperature;
         energyOutput = _energy;
-        starSprite.transform.localScale = new Vector3(_volume, _volume, 1);
-        newSatelliteRadius = _volume / 1.25f;
-        newSatellitePointChild.transform.localPosition = new Vector3(-newSatelliteRadius, 0, 0);
-        orbitRadius = _volume * 1.75f;
         GetComponent<CircleCollider2D>().radius = _volume;
+        newSatellitePointChild.transform.localPosition = new Vector3(-this.GetComponent<CircleCollider2D>().radius, 0, 0);
     }
 
  /*   
@@ -214,9 +249,9 @@ public class Star : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, orbitRadius);
+        Gizmos.DrawWireSphere(transform.position, minOrbitRadius);
+        Gizmos.DrawWireSphere(transform.position, maxOrbitRadius);
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, newSatelliteRadius);
     }
 
 }

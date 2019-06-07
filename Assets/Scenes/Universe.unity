@@ -162,11 +162,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 114644093196833780, guid: 04abf565c420e2c47ba0a32dc520ecf0,
+    - target: {fileID: 95634462186745796, guid: 04abf565c420e2c47ba0a32dc520ecf0,
         type: 2}
-      propertyPath: civilization
-      value: 2
-      objectReference: {fileID: 0}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: ba29f6c0eb4740c4e80eae33813b6b6b, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 04abf565c420e2c47ba0a32dc520ecf0, type: 2}
   m_IsPrefabParent: 0
@@ -214,11 +214,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 114175872920971468, guid: 88f0d143cbaec584aac87d93c022bd19,
+    - target: {fileID: 95201473062871100, guid: 88f0d143cbaec584aac87d93c022bd19,
         type: 2}
-      propertyPath: civilization
-      value: 1
-      objectReference: {fileID: 0}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: ba29f6c0eb4740c4e80eae33813b6b6b, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 88f0d143cbaec584aac87d93c022bd19, type: 2}
   m_IsPrefabParent: 0
@@ -289,11 +289,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114157705153982418, guid: 5cdb8cd272392bf4c94437d0e302cb1b,
+    - target: {fileID: 95208448096515852, guid: 5cdb8cd272392bf4c94437d0e302cb1b,
         type: 2}
-      propertyPath: civilization
-      value: 2
-      objectReference: {fileID: 0}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: ba29f6c0eb4740c4e80eae33813b6b6b, type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5cdb8cd272392bf4c94437d0e302cb1b, type: 2}
   m_IsPrefabParent: 0

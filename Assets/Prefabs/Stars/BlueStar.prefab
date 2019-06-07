@@ -175,7 +175,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 2.95
+  m_Radius: 1
 --- !u!95 &95076886420991232
 Animator:
   serializedVersion: 3
@@ -202,7 +202,7 @@ Animator:
   m_GameObject: {fileID: 1886129231803994}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ba29f6c0eb4740c4e80eae33813b6b6b, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -223,9 +223,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   newSatellitePoint: {fileID: 4944078018299948}
   newSatellitePointChild: {fileID: 4604556847694168}
-  civilization: 0
-  temperature: 0
+  minOrbitRadius: 1.2
+  maxOrbitRadius: 1.7
+  civilization: 1
   type: 1
+  satellites: []
   starSprite: {fileID: 212433969294851382}
   lightSprite: {fileID: 212855005400079694}
 --- !u!212 &212433969294851382
