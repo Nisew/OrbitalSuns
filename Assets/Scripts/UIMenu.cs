@@ -7,7 +7,6 @@ using UnityEngine.SceneManagement;
 public class UIMenu : MonoBehaviour
 {
     [Header("Space Elements")]
-    public SpaceManager spaceManager;
 
     [Header("UI Elements")]
     public Text playerPowerText;
@@ -51,7 +50,7 @@ public class UIMenu : MonoBehaviour
         }
     }
 
-    public void GetStar()
+   /* public void GetStar()
     {
         Star = spaceManager.selectedStar;
 
@@ -64,7 +63,7 @@ public class UIMenu : MonoBehaviour
         totalPowerText.text = "" + totalPower;
         starPowerText.text = starPower + "%";
         shipPowerText.text = shipPower + "%";
-    }
+    }*/
 
     #endregion
 

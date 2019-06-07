@@ -2,64 +2,160 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpaceManager : MonoBehaviour
+public class Universe : MonoBehaviour
 {
-    [Header("UI Elements")]
-    public UIMenu UIScript;
-
-    [Header("Space Elements")]
+    [Header("UNIVERSE LAWS")]
+    float time;
     float doubleClickTime = 0.5f;
-    bool firstClick;
     float clickTime;
+    bool firstClick;
 
-    [Header("Star Elements")]
-    public List<Star> starList;
-    public int starPower;
+    [Header("STAR CLUSTERS")]
+    List<Star> starCluster = new List<Star>();
+    
+    float yellowMinTemp = 2000;
+    float yellowMaxTemp = 2500;
+    float yellowMinVolume = 1.3f;
+    float yellowMaxVolume = 2.7f;
+    float yellowMinEnergyOutput = 100;
+    float yellowMaxEnergyOutput = 150;
 
-    [Header("Ship Elements")]
-    public List<GameObject> totalShips;
-    public GameObject shipPrefab;
+    float blueMinTemp = 0;
+    float blueMaxTemp = 999;
+    float blueMinVolume = 0.9f;
+    float blueMaxVolume = 1.3f;
+    float blueMinEnergyOutput = 700;
+    float blueMaxEnergyOutput = 950;
 
-    [Header("Player Elements")]
-    public Color player1;
-    public Color player2;
-    public GameObject selectedStar;
-    public GameObject selectedTargetStar;
+    float redMinTemp = 999;
+    float redMaxTemp = 9999;
+    float redMinVolume = 4;
+    float redMaxVolume = 6;
+    float redMinEnergyOutput = 200;
+    float redMaxEnergyOutput = 350;
+
+    [Header("SATELLITES")]
+    List<GameObject> spaceshipActiveList = new List<GameObject>();
+    List<GameObject> spaceShipUnactiveList = new List<GameObject>();
+    List<GameObject> solarPanelActiveList = new List<GameObject>();
+    List<GameObject> solarPanelUnactiveList = new List<GameObject>();
+    List<GameObject> cometList = new List<GameObject>();
+    [SerializeField] GameObject solarPanel;
+    [SerializeField] GameObject spaceShip;
+    [SerializeField] GameObject comet;
+
+    [Header("CIVILIZATIONS")]
+    [SerializeField] Color civilization1;
+    [SerializeField] Color civilization2;
+    GameObject selectedStar;
+    GameObject destinyStar;
+
+    [Header("UI")]
+    UIMenu UIScript;
 
     void Awake()
     {
-        starList = TakeAllStars();
+        BigBang();
     }
 
 	void Start()
     {
-        CreateFewShips(5);
+
 	}
 	
 	void Update()
     {
-        CheckSelection();
+
 	}
 
-    #region BIG BANG METHODS
+    #region CREATION OF MATTER
 
-    List<Star> TakeAllStars()
+    public void BigBang()
     {
-        GameObject[] stars;
-        List<Star> starScript = new List<Star>();
+        GameObject[] gasClouds;
 
-        stars = GameObject.FindGameObjectsWithTag("Star");
+        gasClouds = GameObject.FindGameObjectsWithTag("Star");
 
-        foreach(GameObject star in stars)
+        foreach(GameObject star in gasClouds)
         {
-            starScript.Add(star.GetComponent<Star>());
-            star.GetComponent<Star>().MeetUniverse(GetComponent<SpaceManager>());
-        }
+            Star starScript = star.GetComponent<Star>();
 
-        return starScript;
+            string starType = star.GetComponent<Star>().typeOfStar();
+            float temp = 0;
+            float volume = 0;
+            float energy = 0;
+
+            switch (starType)
+            {
+                case ("Yellow"):
+                    volume = Random.Range(yellowMinVolume, yellowMaxVolume);
+                    temp = Random.Range(yellowMinTemp, yellowMaxTemp);
+                    energy = Random.Range(yellowMinEnergyOutput, yellowMaxEnergyOutput);
+                break;
+
+                case ("Blue"):
+                    volume = Random.Range(blueMinVolume, blueMaxVolume);
+                    temp = Random.Range(blueMinTemp, blueMaxTemp);
+                    energy = Random.Range(blueMinEnergyOutput, blueMaxEnergyOutput);
+                    break;
+
+                case ("Red"):
+                    volume = Random.Range(redMinVolume, redMaxVolume);
+                    temp = Random.Range(redMinTemp, redMaxTemp);
+                    energy = Random.Range(redMinEnergyOutput, redMaxEnergyOutput);
+                    break;
+            }
+
+            starScript.SetProperties(temp, volume, energy);
+            starScript.SetUniverse(this);
+            starCluster.Add(starScript);
+        }
+        
     }
 
-    void CreateFewShips(int ships) //CREATES INACTIVE SHIPS
+    public GameObject CreateSpaceShip(int civ)
+    {
+        GameObject provisionalShip;
+        Color civilizationColor = new Color();
+
+        if(civ == 1)
+        {
+            civilizationColor = civilization1;
+        }
+        if (civ == 2)
+        {
+            civilizationColor = civilization2;
+        }
+
+        if (spaceShipUnactiveList.Count <= 0)
+        {
+            provisionalShip = Instantiate(spaceShip);
+            ListAddSpaceShip(provisionalShip);
+        }
+        else
+        {
+            provisionalShip = spaceShipUnactiveList[0];
+            ListAddSpaceShip(provisionalShip);
+        }
+        provisionalShip.GetComponent<SpaceShip>().Tint(civilizationColor);
+        return provisionalShip;
+    }
+
+    public void ListAddSpaceShip(GameObject ship)
+    {
+        if(!spaceshipActiveList.Contains(ship))
+        {
+            spaceshipActiveList.Add(ship);
+        }
+        //ACTIVE/RESTART THE SHIP COMPONENTS
+    }
+
+    public void SendShips(GameObject startStar, GameObject endStar, bool all)
+    {
+        startStar.GetComponent<Star>().SendArmy(endStar, all);
+    }
+
+    /*void CreateFewShips(int ships) //CREATES INACTIVE SHIPS
     {
         for(int i = 0; i < ships; i++)
         {
@@ -67,10 +163,10 @@ public class SpaceManager : MonoBehaviour
             totalShips.Add(ship);
             ship.SetActive(false);
         }
-    }
+    }*/
 
     #endregion
-
+/*
     #region SHIPS METHODS
 
     public GameObject ActiveShip() //PASS AN INACTIVE SHIP OR CREATES A NEW ONE IF ALL ARE ACTIVE
@@ -202,5 +298,6 @@ public class SpaceManager : MonoBehaviour
     }
 
     #endregion
+    */
 
 }

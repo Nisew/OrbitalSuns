@@ -4,104 +4,156 @@ using UnityEngine;
 
 public class Star : MonoBehaviour
 {
-    [Header("Space Elements")]
-    SpaceManager spaceManager;
-    SpriteRenderer starLight;
-    Transform starLightObject;
+    [Header("UNIVERSE LAWS")]
+    Universe universe;
     float time;
-    public float productionTime;
+
+    [Header("STAR")]
+    [SerializeField] Transform newSatellitePoint;
+    [SerializeField] Transform newSatellitePointChild;
+    float newSatelliteRadius;
+    float minOrbitRadius;
+    public float maxOrbitRadius;
+    int maxShips;
+    public int civilization;
+
+    [Header("STAR INFO")]
+    [SerializeField] float temperature;
+    enum starType { Yellow, Blue, Red };
+    [SerializeField] starType type;
+
+    [Header("ENERGY FLOW")]
+    float energyOutput;
+    float armyEnergy;
+    float investEnergy;
+
+    [Header("SATELLITE ARMY")]
+    [SerializeField] List<SpaceShip> satellites = new List<SpaceShip>();
+    int launchingSatellites;
+    List<SpaceShip> enemySatellites = new List<SpaceShip>();
+    Vector2 target;
+
+    [Header("SATELLITE UPGRADES")]
+    float spaceShipLife = 50;
+
+    [Header("SPRITE")]
+    [SerializeField] SpriteRenderer starSprite;
+    [SerializeField] SpriteRenderer lightSprite;
+    Transform lightSpriteTransform;
     float lightSpeed;
-
-    [Header("Star Elements")]
-    public int orbitSaturation;
-    public float orbitDistance;
-    public float bornDistance;
-    public int player = 0;
-    public Transform birthPoint;
-
-    [Header("UI Elements")]
-    public float totalProduction;
-    public float energyProduction;
-    public float shipProduction;
-
-    [Header("Ship Elements")]
-    public List<Ship> orbitingShips = new List<Ship>();
-    public List<Ship> enemyOrbitingShips = new List<Ship>();
-    int provisionalOrbitingShips;
-    public Vector2 objective;
-
+    
 	void Start ()
     {
-        GetBirthPoint();
-        GetLightObject();
+        
     }
-	
-	void Update ()
+
+    void Update()
     {
-		if(orbitingShips.Count < orbitSaturation) //SPAWN SHIPS OVER TIME
+        time += Time.deltaTime;
+
+        if(time >= 1f)
         {
-            time += Time.deltaTime;
-
-            if(time >= totalProduction - shipProduction)
-            {
-                CreateShip();
-                time = 0;
-            }
+            time = 0;
+            SpaceShip();
         }
+    }
 
-        productionTime += Time.deltaTime;
-
-        if(productionTime >= 1)
-        {
-            spaceManager.UpdateStarPower(energyProduction);
-            productionTime = 0;
-        }
-
-        if (enemyOrbitingShips.Count > 0) //FIGHT!
-        {
-            War();
-        }
-
-        starLightObject.Rotate(0, 0, lightSpeed);
-	}
-
-    #region STAR METHODS
-
-    public void LaunchShips(bool sendAll, Star obj) //SEND ALL OR HALF OF ORBITING SHIPS
+    void SpaceShip()
     {
-        provisionalOrbitingShips = orbitingShips.Count;
+        GameObject ship = universe.CreateSpaceShip(civilization);
+        SpaceShip shipScript = ship.GetComponent<SpaceShip>();
 
-        if (sendAll)
+        newSatellitePoint.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 360));
+        shipScript.Create(this, newSatellitePoint.GetChild(0).position, civilization, spaceShipLife, orbitRadius);
+
+        AddInArmy(shipScript);
+    }
+
+    #region LIST METHODS
+
+    public void AddInArmy(SpaceShip satellite)
+    {
+        if(!satellites.Contains(satellite))
         {
-            for (int i = 0; i < provisionalOrbitingShips; i++)
+            satellites.Add(satellite);
+        }
+        else Debug.Log("Ship already in the star army list");
+    }
+
+    public void RemoveFromArmy(SpaceShip satellite)
+    {
+        if (satellites.Contains(satellite))
+        {
+            satellites.Remove(satellite);
+        }
+        else Debug.Log("Ship already out of star army list");
+    }
+
+    public void AddInEnemyArmy(SpaceShip enemySatellite)
+    {
+        if (!enemySatellites.Contains(enemySatellite))
+        {
+            satellites.Add(enemySatellite);
+        }
+        else Debug.Log("Ship already in the star enemies orbiting list");
+    }
+
+    public void RemoveFromEnemyArmy(SpaceShip enemySatellite)
+    {
+        if (enemySatellites.Contains(enemySatellite))
+        {
+            enemySatellites.Remove(enemySatellite);
+        }
+        else Debug.Log("Ship already out of star enemies orbiting list");
+    }
+
+    #endregion
+
+    public void SendArmy(GameObject target, bool all)
+    {
+        if (all)
+        {
+            launchingSatellites = satellites.Count;
+            for (int i = 0; i < launchingSatellites; i++)
             {
-                orbitingShips[i].Launch(obj);
+                satellites[0].SetTravelling(target);
+                RemoveFromArmy(satellites[0]);
             }
         }
         else
         {
-            for (int i = 0; i < provisionalOrbitingShips/2; i++)
+            launchingSatellites = satellites.Count;
+            for (int i = 0; i < launchingSatellites / 2; i++)
             {
-                orbitingShips[i].Launch(obj);
+                satellites[0].SetTravelling(target);
+                RemoveFromArmy(satellites[0]);
             }
         }
     }
 
-    public void CreateShip() //TAKE A SHIP FROM SPACE MANAGER AND PLACE IT IN GAME
+    public void SetUniverse(Universe everything)
     {
-        GameObject ship = spaceManager.ActiveShip();
-        ship.SetActive(true);
-        ship.GetComponent<Ship>().player = player;
-        ship.GetComponentInChildren<SpriteRenderer>().color = spaceManager.TintShips(player);
-        birthPoint.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 360));
-        ship.gameObject.transform.position = birthPoint.GetChild(0).position;        
-        ship.GetComponent<Ship>().orbitalParent = this;
-        ship.GetComponent<Ship>().ResetRandom();
-        ship.GetComponent<Ship>().Creation();
-        AddShip(ship.GetComponent<Ship>());
+        universe = everything;
     }
 
-    public void War() //FIGHT AGAINST INVASORS
+    public string typeOfStar()
+    {
+        return type.ToString();
+    }
+
+    public void SetProperties(float _temperature, float _volume, float _energy)
+    {
+        temperature = _temperature;
+        energyOutput = _energy;
+        starSprite.transform.localScale = new Vector3(_volume, _volume, 1);
+        newSatelliteRadius = _volume / 1.25f;
+        newSatellitePointChild.transform.localPosition = new Vector3(-newSatelliteRadius, 0, 0);
+        orbitRadius = _volume * 1.75f;
+        GetComponent<CircleCollider2D>().radius = _volume;
+    }
+
+ /*   
+    public void ArmyBattle() //FIGHT AGAINST INVASORS
     {
         if (orbitingShips.Count == 0) //LOSE
         {
@@ -141,100 +193,11 @@ public class Star : MonoBehaviour
         }
     } 
 
-    public void GetBirthPoint() //SET THE POSITION OF THE BIRTH OBJECT
+    public void LaunchShips(bool sendAll, Star obj) //SEND ALL OR HALF OF ORBITING SHIPS
     {
-        if (birthPoint == null)
-        {
-            foreach (Transform child in this.gameObject.transform)
-            {
-                if (child.tag == "BirthPoint")
-                {
-                    birthPoint = child.GetChild(0);
-                    birthPoint.transform.position = new Vector2(this.transform.position.x + bornDistance, this.transform.position.y);
-                    birthPoint = child.gameObject.transform;
-                }
-            }
-        }
+
     }
-
-    public void GetLightObject()
-    {
-        foreach (Transform child in this.gameObject.transform)
-        {
-            if (child.tag == "Light")
-            {
-                starLight = child.GetComponent<SpriteRenderer>();
-                starLightObject = starLight.gameObject.transform;
-                starLight.color = spaceManager.GetPlayerColor(player);
-
-                int i = Random.Range(0, 2);
-                if (i == 1) lightSpeed = Random.Range(0.05f, 0.1f);
-                else lightSpeed = Random.Range(-0.05f, -0.1f);
-
-            }
-        }
-    }
-
-    #endregion
-
-    #region UI METHODS
-
-    public float[] PassInfoToUI()
-    {
-        float[] values = new float[3];
-
-        values[0] = totalProduction;
-        values[1] = shipProduction;
-        values[2] = energyProduction;
-
-        return values;
-    }
-
-    #endregion
-
-    #region LIST METHODS
-
-    public void AddShip(Ship ship) //ADD A SHIP TO THE PLANET ORBIT
-    {
-        if (!orbitingShips.Contains(ship))
-        {
-            orbitingShips.Add(ship);
-        }
-    }
-
-    public void AddEnemyShip(Ship ship) //ADD AN ENEMY SHIP TO THE PLANET ORBIT
-    {
-        if (!enemyOrbitingShips.Contains(ship))
-        {
-            enemyOrbitingShips.Add(ship);
-        }
-    }
-
-    public void RemoveShip(Ship ship) //REMOVE A SHIP FROM THE PLANET ORBIT
-    {
-        if (orbitingShips.Contains(ship))
-        {
-            orbitingShips.Remove(ship);
-        }
-    }
-
-    public void RemoveEnemyShip(Ship ship) //REMOVE AN ENEMY SHIP FROM THE PLANET ORBIT
-    {
-        if (enemyOrbitingShips.Contains(ship))
-        {
-            enemyOrbitingShips.Remove(ship);
-        }
-    }
-
-    #endregion
-
-    #region SPACEMANAGER METHODS
-
-    public void MeetUniverse(SpaceManager universe)
-    {
-        spaceManager = universe;
-    }
-
+    
     public void Selected(bool selected)
     {
         if(selected)
@@ -246,34 +209,14 @@ public class Star : MonoBehaviour
             starLight.gameObject.GetComponent<Animator>().SetTrigger("Deselection");
         }
     }
-
-    public void ProductionSlider(float value)
-    {
-        if(value == 0)
-        {
-            shipProduction = 0;
-            energyProduction = totalProduction;
-        }
-        if(value == 100)
-        {
-            shipProduction = totalProduction;
-            energyProduction = 0;
-        }
-        if(value > 0 && value < 100)
-        {
-            shipProduction = (totalProduction/100) * value;
-            energyProduction = (totalProduction/100) * (100 - value);
-        }
-    }
-
-    #endregion
-
+    */
+    
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, orbitDistance);
+        Gizmos.DrawWireSphere(transform.position, orbitRadius);
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, bornDistance);
+        Gizmos.DrawWireSphere(transform.position, newSatelliteRadius);
     }
 
 }

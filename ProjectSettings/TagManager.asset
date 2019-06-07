@@ -6,9 +6,11 @@ TagManager:
   tags:
   - Star
   - Ship
-  - Space
-  - BirthPoint
+  - UIButton
+  - UI
   - Light
+  - BirthPoint
+  - Universe
   layers:
   - Default
   - TransparentFX
