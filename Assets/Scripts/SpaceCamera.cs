@@ -39,7 +39,7 @@ public class SpaceCamera : MonoBehaviour
 
             if (Input.GetAxis("Mouse ScrollWheel") < 0)
             {
-                if(cam.orthographicSize < 20)
+                if(cam.orthographicSize < 40)
                 {
                     cam.orthographicSize += zoomSpeed;
                     dragSpeed ++;

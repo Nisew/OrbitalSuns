@@ -13,6 +13,7 @@ public class Star : MonoBehaviour
     [SerializeField] Transform newSatellitePointChild;
     public float minOrbitRadius;
     public float maxOrbitRadius;
+    float orbitSpeed;
     int maxShips;
     [SerializeField] int civilization;
 
@@ -38,18 +39,23 @@ public class Star : MonoBehaviour
     List<SpaceShip> enemySatellites = new List<SpaceShip>();
     Vector2 target;
 
-    [Header("SATELLITE UPGRADES")]
-    float spaceShipLife = 50;
-
     [Header("SPRITE")]
     [SerializeField] SpriteRenderer starSprite;
-    [SerializeField] SpriteRenderer lightSprite;
-    Transform lightSpriteTransform;
-    float lightSpeed;
     
 	void Start ()
     {
-        
+        if(type == starType.Yellow)
+        {
+            orbitSpeed = 50;
+        }
+        else if (type == starType.Blue)
+        {
+            orbitSpeed = 70;
+        }
+        else if (type == starType.Red)
+        {
+            orbitSpeed = 20;
+        }
     }
 
     void Update()
@@ -78,7 +84,6 @@ public class Star : MonoBehaviour
 
         newSatellitePoint.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 360));
         shipScript.NewParent(this);
-        shipScript.SetOrbitRadius();
         shipScript.Create();
 
         AddInArmy(shipScript);
@@ -99,9 +104,14 @@ public class Star : MonoBehaviour
         return maxOrbitRadius;
     }
 
+    public float GetOrbitSpeed()
+    {
+        return Random.Range(orbitSpeed - 7.5f, orbitSpeed + 7.5f);
+    }
+
     public Vector3 GetBirthPoint()
     {
-        return newSatellitePointChild.transform.localPosition;
+        return newSatellitePointChild.transform.position;
     }
 
     #region LIST METHODS
@@ -250,8 +260,8 @@ public class Star : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, minOrbitRadius);
-        Gizmos.DrawWireSphere(transform.position, maxOrbitRadius);
         Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, maxOrbitRadius);
     }
 
 }

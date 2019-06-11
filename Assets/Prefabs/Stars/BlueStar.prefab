@@ -223,10 +223,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   newSatellitePoint: {fileID: 4944078018299948}
   newSatellitePointChild: {fileID: 4604556847694168}
-  minOrbitRadius: 1.2
-  maxOrbitRadius: 1.7
+  minOrbitRadius: 1.22
+  maxOrbitRadius: 2.25
   civilization: 1
-  type: 1
+  type: 0
   satellites: []
   starSprite: {fileID: 212433969294851382}
   lightSprite: {fileID: 212855005400079694}

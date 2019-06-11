@@ -15,15 +15,15 @@ public class Universe : MonoBehaviour
     
     float yellowMinTemp = 2000;
     float yellowMaxTemp = 2500;
-    float yellowMinVolume = 1.3f;
-    float yellowMaxVolume = 2.7f;
-    float yellowMinEnergyOutput = 100;
-    float yellowMaxEnergyOutput = 150;
+    float yellowMinVolume = 1.5f;
+    float yellowMaxVolume = 2;
+    float yellowMinEnergyOutput = 90;
+    float yellowMaxEnergyOutput = 110;
 
     float blueMinTemp = 0;
     float blueMaxTemp = 999;
-    float blueMinVolume = 0.9f;
-    float blueMaxVolume = 1.3f;
+    float blueMinVolume = 0.5f;
+    float blueMaxVolume = 1;
     float blueMinEnergyOutput = 700;
     float blueMaxEnergyOutput = 950;
 
