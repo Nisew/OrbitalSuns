@@ -8,25 +8,31 @@ public class Star : MonoBehaviour
     Universe universe;
     float time;
 
-    [Header("STAR")]
-    [SerializeField] Transform newSatellitePoint;
-    [SerializeField] Transform newSatellitePointChild;
-    public float minOrbitRadius;
-    public float maxOrbitRadius;
-    float orbitSpeed;
-    int maxShips;
-    [SerializeField] int civilization;
-
-    [Header("CIVILIZATION STATS")]
-    float shipCost;
-    float shipAttack;
-    float shipLife;
-    float shipShield;
-
     [Header("STAR INFO")]
     float temperature;
     enum starType { Yellow, Blue, Red };
     [SerializeField] starType type;
+
+    [Header("STAR STATS")]
+    [SerializeField] Transform newSatellitePoint;
+    [SerializeField] Transform newSatellitePointChild;
+    [SerializeField] int civilization;
+
+    public float minShipOrbitRadius;
+    public float maxShipOrbitRadius;
+    float shipOrbitSpeed;
+    int maxShips;
+
+    public float minPanelOrbitRadius;
+    public float maxPanelOrbitRadius;
+    float panelOrbitSpeed;
+    int maxPanels;
+
+    [Header("SATELLITE STATS")]
+    float shipCost;
+    float shipAttack;
+    float shipLife;
+    float shipShield;
 
     [Header("ENERGY FLOW")]
     float energyOutput;
@@ -34,9 +40,10 @@ public class Star : MonoBehaviour
     float investEnergy;
 
     [Header("SATELLITE ARMY")]
-    [SerializeField] List<SpaceShip> satellites = new List<SpaceShip>();
-    int launchingSatellites;
-    List<SpaceShip> enemySatellites = new List<SpaceShip>();
+    [SerializeField] List<SpaceShip> Ships = new List<SpaceShip>();
+    //[SerializeField] List<SolarPanel> Panels = new List<SolarPanel>();
+    List<SpaceShip> enemyShips = new List<SpaceShip>();
+    int launchingShips;
     Vector2 target;
 
     [Header("SPRITE")]
@@ -46,15 +53,15 @@ public class Star : MonoBehaviour
     {
         if(type == starType.Yellow)
         {
-            orbitSpeed = 50;
+            shipOrbitSpeed = 50;
         }
         else if (type == starType.Blue)
         {
-            orbitSpeed = 70;
+            shipOrbitSpeed = 70;
         }
         else if (type == starType.Red)
         {
-            orbitSpeed = 20;
+            shipOrbitSpeed = 20;
         }
     }
 
@@ -89,96 +96,84 @@ public class Star : MonoBehaviour
         AddInArmy(shipScript);
     }
 
-    public int GetCiv()
-    {
-        return civilization;
-    }
+    #region ORBIT METHODS
 
-    public float GetMinOrbitRadius()
-    {
-        return minOrbitRadius;
-    }
-
-    public float GetMaxOrbitRadius()
-    {
-        return maxOrbitRadius;
-    }
-
-    public float GetOrbitSpeed()
-    {
-        return Random.Range(orbitSpeed - 7.5f, orbitSpeed + 7.5f);
-    }
-
-    public Vector3 GetBirthPoint()
+    public Vector3 GetSatelliteBirthPoint()
     {
         return newSatellitePointChild.transform.position;
     }
+
+    #region SHIPS
+
+    public float GetShipOrbitRadius()
+    {
+        return Random.Range(minShipOrbitRadius, maxShipOrbitRadius);
+    }
+
+    public float GetShipOrbitSpeed()
+    {
+        return Random.Range(shipOrbitSpeed - 7.5f, shipOrbitSpeed + 7.5f);
+    }
+
+    #endregion
+
+    #endregion
 
     #region LIST METHODS
 
     public void AddInArmy(SpaceShip satellite)
     {
-        if(!satellites.Contains(satellite))
+        if(!Ships.Contains(satellite))
         {
-            satellites.Add(satellite);
+            Ships.Add(satellite);
         }
         else Debug.Log("Ship already in the star army list");
     }
 
     public void RemoveFromArmy(SpaceShip satellite)
     {
-        if (satellites.Contains(satellite))
+        if (Ships.Contains(satellite))
         {
-            satellites.Remove(satellite);
+            Ships.Remove(satellite);
         }
         else Debug.Log("Ship already out of star army list");
     }
 
     public void AddInEnemyArmy(SpaceShip enemySatellite)
     {
-        if (!enemySatellites.Contains(enemySatellite))
+        if (!enemyShips.Contains(enemySatellite))
         {
-            satellites.Add(enemySatellite);
+            enemyShips.Add(enemySatellite);
         }
         else Debug.Log("Ship already in the star enemies orbiting list");
     }
 
     public void RemoveFromEnemyArmy(SpaceShip enemySatellite)
     {
-        if (enemySatellites.Contains(enemySatellite))
+        if (enemyShips.Contains(enemySatellite))
         {
-            enemySatellites.Remove(enemySatellite);
+            enemyShips.Remove(enemySatellite);
         }
         else Debug.Log("Ship already out of star enemies orbiting list");
     }
 
     #endregion
 
-    public void SendArmy(GameObject target, bool all)
-    {
-        if (all)
-        {
-            launchingSatellites = satellites.Count;
-            for (int i = 0; i < launchingSatellites; i++)
-            {
-                satellites[0].SetTravelling(target);
-                RemoveFromArmy(satellites[0]);
-            }
-        }
-        else
-        {
-            launchingSatellites = satellites.Count;
-            for (int i = 0; i < launchingSatellites / 2; i++)
-            {
-                satellites[0].SetTravelling(target);
-                RemoveFromArmy(satellites[0]);
-            }
-        }
-    }
+    #region STAR STATS
 
-    public void SetUniverse(Universe everything)
+    public void SetProperties(float _temperature, float _volume, float _energy)
     {
-        universe = everything;
+        starSprite.transform.localScale = new Vector3(_volume, _volume, 1);
+
+        minShipOrbitRadius = minShipOrbitRadius * _volume;
+        maxShipOrbitRadius = maxShipOrbitRadius * _volume;
+        maxPanelOrbitRadius = maxPanelOrbitRadius * _volume;
+        maxPanelOrbitRadius = maxPanelOrbitRadius * _volume;
+        GetComponent<CircleCollider2D>().radius = _volume;
+        newSatellitePointChild.transform.localPosition = new Vector3(this.GetComponent<CircleCollider2D>().radius, 0, 0);
+
+        temperature = _temperature;
+        energyOutput = _energy;
     }
 
     public string typeOfStar()
@@ -186,15 +181,38 @@ public class Star : MonoBehaviour
         return type.ToString();
     }
 
-    public void SetProperties(float _temperature, float _volume, float _energy)
+    #endregion
+
+    public int GetCiv()
     {
-        starSprite.transform.localScale = new Vector3(_volume, _volume, 1);
-        minOrbitRadius = minOrbitRadius * _volume;
-        maxOrbitRadius = maxOrbitRadius * _volume;
-        temperature = _temperature;
-        energyOutput = _energy;
-        GetComponent<CircleCollider2D>().radius = _volume;
-        newSatellitePointChild.transform.localPosition = new Vector3(-this.GetComponent<CircleCollider2D>().radius, 0, 0);
+        return civilization;
+    }
+
+    public void SendArmy(GameObject target, bool all)
+    {
+        if (all)
+        {
+            launchingShips = Ships.Count;
+            for (int i = 0; i < launchingShips; i++)
+            {
+                Ships[0].SetTravelling(target);
+                RemoveFromArmy(Ships[0]);
+            }
+        }
+        else
+        {
+            launchingShips = Ships.Count;
+            for (int i = 0; i < launchingShips / 2; i++)
+            {
+                Ships[0].SetTravelling(target);
+                RemoveFromArmy(Ships[0]);
+            }
+        }
+    }
+
+    public void SetUniverse(Universe everything)
+    {
+        universe = everything;
     }
 
  /*   
@@ -259,9 +277,11 @@ public class Star : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, minOrbitRadius);
+        Gizmos.DrawWireSphere(transform.position, minShipOrbitRadius);
+        Gizmos.DrawWireSphere(transform.position, maxShipOrbitRadius);
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireSphere(transform.position, maxOrbitRadius);
+        Gizmos.DrawWireSphere(transform.position, minPanelOrbitRadius);
+        Gizmos.DrawWireSphere(transform.position, maxPanelOrbitRadius);
     }
 
 }

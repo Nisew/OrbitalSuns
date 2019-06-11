@@ -18,8 +18,6 @@ public class SpaceShip : MonoBehaviour
     Star orbitalParent;
     Vector3 desiredPosition;
     float orbitRadius;
-    float minOrbitRadius;
-    float maxOrbitRadius;
     float orbitSpeed;
     float wiggleSpeed;
     int orbitDirection;
@@ -76,7 +74,7 @@ public class SpaceShip : MonoBehaviour
             if(time >= 5)
             {
                 time = 0;
-                orbitRadius = Random.Range(minOrbitRadius, maxOrbitRadius);
+                orbitRadius = orbitalParent.GetShipOrbitRadius();
             }
         }
     }
@@ -91,7 +89,7 @@ public class SpaceShip : MonoBehaviour
         {
             transform.position = Vector2.MoveTowards(transform.position, destiny.gameObject.transform.position, Time.deltaTime * speed);
 
-            if (Vector2.Distance(transform.position, destiny.transform.position) < destiny.maxOrbitRadius)
+            if (Vector2.Distance(transform.position, destiny.transform.position) <= 0)
             {
                 if (destiny.GetCiv() != civilization)
                 {
@@ -119,15 +117,13 @@ public class SpaceShip : MonoBehaviour
     {
         civilization = parent.GetCiv();
         orbitalParent = parent;
-        minOrbitRadius = parent.GetMinOrbitRadius();
-        maxOrbitRadius = parent.GetMaxOrbitRadius();
-        orbitSpeed = parent.GetOrbitSpeed();
-        orbitRadius = Random.Range(minOrbitRadius, maxOrbitRadius);
+        orbitSpeed = parent.GetShipOrbitSpeed();
+        orbitRadius = orbitalParent.GetShipOrbitRadius();
     }
 
     public void Create()
     {
-        gameObject.transform.localPosition = orbitalParent.GetBirthPoint();
+        gameObject.transform.localPosition = orbitalParent.GetSatelliteBirthPoint();
         civilization = orbitalParent.GetCiv();
         SetOrbiting();
         this.gameObject.SetActive(true);
