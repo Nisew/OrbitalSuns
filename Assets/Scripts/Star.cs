@@ -74,6 +74,14 @@ public class Star : MonoBehaviour
             time = 0;
             SpaceShip();
         }
+
+        if(enemyShips.Count > 0)
+        {
+            if(Ships.Count <= 0)
+            {
+                Surrender();
+            }
+        }
     }
 
     public void CivShipStats(float _shipLife, float _shipCost, float _shipAttack, float _shipShield)
@@ -167,7 +175,7 @@ public class Star : MonoBehaviour
 
         minShipOrbitRadius = minShipOrbitRadius * _volume;
         maxShipOrbitRadius = maxShipOrbitRadius * _volume;
-        maxPanelOrbitRadius = maxPanelOrbitRadius * _volume;
+        minPanelOrbitRadius = minPanelOrbitRadius * _volume;
         maxPanelOrbitRadius = maxPanelOrbitRadius * _volume;
         GetComponent<CircleCollider2D>().radius = _volume;
         newSatellitePointChild.transform.localPosition = new Vector3(this.GetComponent<CircleCollider2D>().radius, 0, 0);
@@ -181,13 +189,18 @@ public class Star : MonoBehaviour
         return type.ToString();
     }
 
-    #endregion
-
     public int GetCiv()
     {
         return civilization;
     }
 
+    public void SetUniverse(Universe everything)
+    {
+        universe = everything;
+    }
+
+    #endregion
+    
     public void SendArmy(GameObject target, bool all)
     {
         if (all)
@@ -210,70 +223,34 @@ public class Star : MonoBehaviour
         }
     }
 
-    public void SetUniverse(Universe everything)
+    public void EnemyShot(SpaceShip enemyShip)
     {
-        universe = everything;
+        enemyShip.RecieveDamage(Ships[0].GetAttack());
+        Ships[0].RecieveDamage(enemyShip.GetAttack());
+
+        if (enemyShip.IsDestroyed()) enemyShip.DestroyEnemy(enemyShip);
+        if (Ships[0].IsDestroyed()) Ships[0].Destroy(Ships[0]);
     }
 
- /*   
-    public void ArmyBattle() //FIGHT AGAINST INVASORS
+    public void ShipDestroyed(SpaceShip ship)
     {
-        if (orbitingShips.Count == 0) //LOSE
-        {
-            player = enemyOrbitingShips[0].player;
-            starLight.color = spaceManager.GetPlayerColor(player);
-
-            for (int i = 0; i < enemyOrbitingShips.Count; i++)
-            {
-                Ship enemyShip = enemyOrbitingShips[i];
-
-                RemoveEnemyShip(enemyOrbitingShips[i]);
-                AddShip(enemyShip);
-            }
-        }
-        else
-        {
-            for (int i = 0; i < enemyOrbitingShips.Count; i++)
-            {
-                if (orbitingShips.Count == 0) break;
-
-                enemyOrbitingShips[i].CrushAnotherShip(orbitingShips[i]);
-
-                if (enemyOrbitingShips[i].life <= 0) //ENEMY SHIP DEAD
-                {
-                    enemyOrbitingShips[i].crashed = true;
-                    RemoveEnemyShip(enemyOrbitingShips[i]);
-                }
-
-                if (orbitingShips.Count == 0) break;
-
-                if (orbitingShips[i].life <= 0) //ALLY SHIP DEAD
-                {
-                    orbitingShips[i].crashed = true;
-                    RemoveShip(orbitingShips[i]);
-                }
-            }
-        }
-    } 
-
-    public void LaunchShips(bool sendAll, Star obj) //SEND ALL OR HALF OF ORBITING SHIPS
-    {
-
+        universe.AddUnactiveSpaceShip(ship.gameObject);
     }
-    
-    public void Selected(bool selected)
+
+    void Surrender()
     {
-        if(selected)
+        SpaceShip enemyShip;
+
+        civilization = enemyShips[0].VictoryFlag();
+
+        for (int i = 0; i < enemyShips.Count; i++)
         {
-            starLight.gameObject.GetComponent<Animator>().SetTrigger("Selection");
-        }
-        else
-        {
-            starLight.gameObject.GetComponent<Animator>().SetTrigger("Deselection");
+            enemyShip = enemyShips[i];
+            RemoveFromEnemyArmy(enemyShip);
+            AddInArmy(enemyShip);
         }
     }
-    */
-    
+
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;

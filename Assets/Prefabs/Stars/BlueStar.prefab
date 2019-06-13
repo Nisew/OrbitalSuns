@@ -112,7 +112,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1026285631942444}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.411981, y: -0.06295464, z: 0.0044280067}
+  m_LocalPosition: {x: -7.1, y: -0.99, z: 0.0044280067}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4929130958863386}
@@ -221,15 +221,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09f3bcae4df4db54cba189240a01d174, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 1
   newSatellitePoint: {fileID: 4944078018299948}
   newSatellitePointChild: {fileID: 4604556847694168}
-  minOrbitRadius: 1.22
-  maxOrbitRadius: 2.25
   civilization: 1
-  type: 0
-  satellites: []
+  minShipOrbitRadius: 1.27
+  maxShipOrbitRadius: 1.76
+  minPanelOrbitRadius: 1.95
+  maxPanelOrbitRadius: 2.1
+  Ships: []
   starSprite: {fileID: 212433969294851382}
-  lightSprite: {fileID: 212855005400079694}
 --- !u!212 &212433969294851382
 SpriteRenderer:
   m_ObjectHideFlags: 1

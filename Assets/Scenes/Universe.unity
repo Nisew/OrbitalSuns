@@ -132,11 +132,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4424537829291460, guid: 04abf565c420e2c47ba0a32dc520ecf0, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 16.73
+      value: 20.9
       objectReference: {fileID: 0}
     - target: {fileID: 4424537829291460, guid: 04abf565c420e2c47ba0a32dc520ecf0, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 15.6
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 4424537829291460, guid: 04abf565c420e2c47ba0a32dc520ecf0, type: 2}
       propertyPath: m_LocalPosition.z
@@ -169,13 +169,13 @@ Prefab:
       objectReference: {fileID: 9100000, guid: ba29f6c0eb4740c4e80eae33813b6b6b, type: 2}
     - target: {fileID: 114644093196833780, guid: 04abf565c420e2c47ba0a32dc520ecf0,
         type: 2}
-      propertyPath: maxOrbitRadius
-      value: 1.92
+      propertyPath: minPanelOrbitRadius
+      value: 2.45
       objectReference: {fileID: 0}
     - target: {fileID: 114644093196833780, guid: 04abf565c420e2c47ba0a32dc520ecf0,
         type: 2}
-      propertyPath: minOrbitRadius
-      value: 1.12
+      propertyPath: maxPanelOrbitRadius
+      value: 2.78
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 04abf565c420e2c47ba0a32dc520ecf0, type: 2}
@@ -194,11 +194,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4428507830563612, guid: 88f0d143cbaec584aac87d93c022bd19, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -7.1
+      value: -21.6
       objectReference: {fileID: 0}
     - target: {fileID: 4428507830563612, guid: 88f0d143cbaec584aac87d93c022bd19, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -0.99
+      value: 4.3
       objectReference: {fileID: 0}
     - target: {fileID: 4428507830563612, guid: 88f0d143cbaec584aac87d93c022bd19, type: 2}
       propertyPath: m_LocalPosition.z
@@ -231,18 +231,23 @@ Prefab:
       objectReference: {fileID: 9100000, guid: ba29f6c0eb4740c4e80eae33813b6b6b, type: 2}
     - target: {fileID: 114175872920971468, guid: 88f0d143cbaec584aac87d93c022bd19,
         type: 2}
-      propertyPath: minOrbitRadius
-      value: 1.41
+      propertyPath: minPanelOrbitRadius
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 114175872920971468, guid: 88f0d143cbaec584aac87d93c022bd19,
         type: 2}
-      propertyPath: maxOrbitRadius
-      value: 2.59
+      propertyPath: maxPanelOrbitRadius
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 114175872920971468, guid: 88f0d143cbaec584aac87d93c022bd19,
         type: 2}
-      propertyPath: type
-      value: 1
+      propertyPath: minShipOrbitRadius
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114175872920971468, guid: 88f0d143cbaec584aac87d93c022bd19,
+        type: 2}
+      propertyPath: maxShipOrbitRadius
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 88f0d143cbaec584aac87d93c022bd19, type: 2}
@@ -284,11 +289,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4181370468316034, guid: 5cdb8cd272392bf4c94437d0e302cb1b, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 3.27
+      value: -0.8
       objectReference: {fileID: 0}
     - target: {fileID: 4181370468316034, guid: 5cdb8cd272392bf4c94437d0e302cb1b, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 2.34
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 4181370468316034, guid: 5cdb8cd272392bf4c94437d0e302cb1b, type: 2}
       propertyPath: m_LocalPosition.z
@@ -321,13 +326,13 @@ Prefab:
       objectReference: {fileID: 9100000, guid: ba29f6c0eb4740c4e80eae33813b6b6b, type: 2}
     - target: {fileID: 114157705153982418, guid: 5cdb8cd272392bf4c94437d0e302cb1b,
         type: 2}
-      propertyPath: maxOrbitRadius
-      value: 2.28
+      propertyPath: minPanelOrbitRadius
+      value: 4.18
       objectReference: {fileID: 0}
     - target: {fileID: 114157705153982418, guid: 5cdb8cd272392bf4c94437d0e302cb1b,
         type: 2}
-      propertyPath: minOrbitRadius
-      value: 1.24
+      propertyPath: maxPanelOrbitRadius
+      value: 5.36
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5cdb8cd272392bf4c94437d0e302cb1b, type: 2}

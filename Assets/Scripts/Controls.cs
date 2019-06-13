@@ -32,7 +32,6 @@ public class Controls : MonoBehaviour
 
             if (hits.Length == 0)
             {
-                Debug.Log("Deselected");
                 selectedStar = null;
                 targetStar = null;
             }
@@ -67,14 +66,12 @@ public class Controls : MonoBehaviour
                         else
                         {
                             targetStar = hits[0].collider.gameObject;
-                            Debug.Log("target: ", targetStar);
                         }
 
                     }
                     else
                     {
                         selectedStar = hits[0].collider.gameObject;
-                        Debug.Log("Selected: ", selectedStar);
                     }
                 }
                 else if (hits[0].collider.tag == "UIButton")
