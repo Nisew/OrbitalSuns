@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4428507830563612}
   - component: {fileID: 114175872920971468}
-  - component: {fileID: 58877870753154764}
+  - component: {fileID: 58247750978115044}
   m_Layer: 0
   m_Name: BlueStar
   m_TagString: Star
@@ -40,7 +40,7 @@ GameObject:
   - component: {fileID: 95076886420991232}
   m_Layer: 0
   m_Name: Sprite
-  m_TagString: Untagged
+  m_TagString: StarSprite
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -112,7 +112,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1026285631942444}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7.1, y: -0.99, z: 0.0044280067}
+  m_LocalPosition: {x: -19.3, y: 5.4, z: 0.0044280067}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4929130958863386}
@@ -161,7 +161,7 @@ Transform:
   m_Father: {fileID: 4428507830563612}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &58877870753154764
+--- !u!58 &58247750978115044
 CircleCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -175,7 +175,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 1
+  m_Radius: 1.88
 --- !u!95 &95076886420991232
 Animator:
   serializedVersion: 3
@@ -225,10 +225,13 @@ MonoBehaviour:
   newSatellitePoint: {fileID: 4944078018299948}
   newSatellitePointChild: {fileID: 4604556847694168}
   civilization: 1
-  minShipOrbitRadius: 1.27
-  maxShipOrbitRadius: 1.76
-  minPanelOrbitRadius: 1.95
-  maxPanelOrbitRadius: 2.1
+  minShipOrbitRadius: 2
+  maxShipOrbitRadius: 3
+  minPanelOrbitRadius: 4.92
+  maxPanelOrbitRadius: 5.78
+  energyOutput: 0
+  armyEnergy: 0
+  investEnergy: 0
   Ships: []
   starSprite: {fileID: 212433969294851382}
 --- !u!212 &212433969294851382

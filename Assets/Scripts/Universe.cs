@@ -13,26 +13,26 @@ public class Universe : MonoBehaviour
     [Header("STAR CLUSTERS")]
     List<Star> starCluster = new List<Star>();
     
-    float yellowMinTemp = 2000;
-    float yellowMaxTemp = 2500;
+    float yellowMinTemp = 5000;
+    float yellowMaxTemp = 7700;
     float yellowMinVolume = 1.5f;
     float yellowMaxVolume = 2;
-    float yellowMinEnergyOutput = 90;
-    float yellowMaxEnergyOutput = 110;
+    float yellowMinEnergyOutput = 235;
+    float yellowMaxEnergyOutput = 265;
 
-    float blueMinTemp = 0;
-    float blueMaxTemp = 999;
+    float blueMinTemp = 27000;
+    float blueMaxTemp = 34000;
     float blueMinVolume = 0.5f;
     float blueMaxVolume = 1;
-    float blueMinEnergyOutput = 700;
-    float blueMaxEnergyOutput = 950;
+    float blueMinEnergyOutput = 255;
+    float blueMaxEnergyOutput = 275;
 
-    float redMinTemp = 999;
-    float redMaxTemp = 9999;
+    float redMinTemp = 4000;
+    float redMaxTemp = 6500;
     float redMinVolume = 4;
     float redMaxVolume = 6;
-    float redMinEnergyOutput = 200;
-    float redMaxEnergyOutput = 350;
+    float redMinEnergyOutput = 220;
+    float redMaxEnergyOutput = 240;
 
     [Header("SATELLITES")]
     List<GameObject> spaceShipActiveList = new List<GameObject>();
@@ -78,39 +78,41 @@ public class Universe : MonoBehaviour
 
         foreach(GameObject star in gasClouds)
         {
-            Star starScript = star.GetComponent<Star>();
-
-            string starType = star.GetComponent<Star>().typeOfStar();
-            float temp = 0;
-            float volume = 0;
-            float energy = 0;
-
-            switch (starType)
+            if(star.GetComponent<Star>())
             {
-                case ("Yellow"):
-                    volume = Random.Range(yellowMinVolume, yellowMaxVolume);
-                    temp = Random.Range(yellowMinTemp, yellowMaxTemp);
-                    energy = Random.Range(yellowMinEnergyOutput, yellowMaxEnergyOutput);
-                break;
+                Star starScript = star.GetComponent<Star>();
 
-                case ("Blue"):
-                    volume = Random.Range(blueMinVolume, blueMaxVolume);
-                    temp = Random.Range(blueMinTemp, blueMaxTemp);
-                    energy = Random.Range(blueMinEnergyOutput, blueMaxEnergyOutput);
+                string starType = star.GetComponent<Star>().typeOfStar();
+                float temp = 0;
+                float volume = 0;
+                float energy = 0;
+
+                switch (starType)
+                {
+                    case ("Yellow"):
+                        volume = Random.Range(yellowMinVolume, yellowMaxVolume);
+                        temp = Random.Range(yellowMinTemp, yellowMaxTemp);
+                        energy = Random.Range(yellowMinEnergyOutput, yellowMaxEnergyOutput);
                     break;
 
-                case ("Red"):
-                    volume = Random.Range(redMinVolume, redMaxVolume);
-                    temp = Random.Range(redMinTemp, redMaxTemp);
-                    energy = Random.Range(redMinEnergyOutput, redMaxEnergyOutput);
-                    break;
+                    case ("Blue"):
+                        volume = Random.Range(blueMinVolume, blueMaxVolume);
+                        temp = Random.Range(blueMinTemp, blueMaxTemp);
+                        energy = Random.Range(blueMinEnergyOutput, blueMaxEnergyOutput);
+                        break;
+
+                    case ("Red"):
+                        volume = Random.Range(redMinVolume, redMaxVolume);
+                        temp = Random.Range(redMinTemp, redMaxTemp);
+                        energy = Random.Range(redMinEnergyOutput, redMaxEnergyOutput);
+                        break;
+                }
+
+                starScript.SetProperties(temp, volume, energy);
+                starScript.SetUniverse(this);
+                starCluster.Add(starScript);
             }
-
-            starScript.SetProperties(temp, volume, energy);
-            starScript.SetUniverse(this);
-            starCluster.Add(starScript);
-        }
-        
+        }        
     }
 
     public GameObject CreateSpaceShip(int civ)

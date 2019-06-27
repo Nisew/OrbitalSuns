@@ -8,8 +8,9 @@ public class Controls : MonoBehaviour
     Universe universe;
 
     [Header("CLICK CONTROL")]
-    [SerializeField] GameObject selectedStar;
-    [SerializeField] GameObject targetStar;
+    [SerializeField] Star selectedStar;
+    [SerializeField]
+    Star targetStar;
     float time;
     bool firstClick;
 
@@ -40,38 +41,38 @@ public class Controls : MonoBehaviour
                 if(hits[0].collider.tag == "Star")
                 {
 
-                    if(hits[0].collider.gameObject != selectedStar && selectedStar != null)
+                    if(hits[0].collider.GetComponent<Star>().gameObject != selectedStar && selectedStar != null)
                     {
                         if (!firstClick)
                         {
                             firstClick = true;
-                            targetStar = hits[0].collider.gameObject;
-                            universe.SendShips(selectedStar, targetStar, false);
+                            targetStar = hits[0].collider.GetComponent<Star>();
+                            universe.SendShips(selectedStar.gameObject, targetStar.gameObject, false);
                         }
                         else if (hits[0].collider.gameObject == targetStar && firstClick)
                         {
                             firstClick = false;
                             time = 1;
-                            targetStar = hits[0].collider.gameObject;
-                            universe.SendShips(selectedStar, targetStar, true);
+                            targetStar = hits[0].collider.GetComponent<Star>();
+                            universe.SendShips(selectedStar.gameObject, targetStar.gameObject, true);
                             selectedStar = null;
                             targetStar = null;
                         }
                         else if (hits[0].collider.gameObject != targetStar && firstClick)
                         {
-                            targetStar = hits[0].collider.gameObject;
+                            targetStar = hits[0].collider.GetComponent<Star>();
                             time = 1;
-                            universe.SendShips(selectedStar, targetStar, false);
+                            universe.SendShips(selectedStar.gameObject, targetStar.gameObject, false);
                         }
                         else
                         {
-                            targetStar = hits[0].collider.gameObject;
+                            targetStar = hits[0].collider.GetComponent<Star>();
                         }
 
                     }
                     else
                     {
-                        selectedStar = hits[0].collider.gameObject;
+                        selectedStar = hits[0].collider.GetComponentInParent<Star>();
                     }
                 }
                 else if (hits[0].collider.tag == "UIButton")
@@ -83,9 +84,46 @@ public class Controls : MonoBehaviour
             {
                 for (int i = 0; i < hits.Length; i++)
                 {
-                    if(hits[i].collider.tag == "UIButton")
+                    if (hits[i].collider.tag == "UIButton")
                     {
                         Debug.Log("UIButton");
+                    }
+                    if (hits[0].collider.tag == "Star")
+                    {
+
+                        if (hits[0].collider.GetComponentInParent<Star>().gameObject != selectedStar && selectedStar != null)
+                        {
+                            if (!firstClick)
+                            {
+                                firstClick = true;
+                                targetStar = hits[0].collider.GetComponentInParent<Star>();
+                                universe.SendShips(selectedStar.gameObject, targetStar.gameObject, false);
+                            }
+                            else if (hits[0].collider.GetComponentInParent<GameObject>() == targetStar && firstClick)
+                            {
+                                firstClick = false;
+                                time = 1;
+                                targetStar = hits[0].collider.GetComponentInParent<Star>();
+                                universe.SendShips(selectedStar.gameObject, targetStar.gameObject, true);
+                                selectedStar = null;
+                                targetStar = null;
+                            }
+                            else if (hits[0].collider.GetComponentInParent<GameObject>() != targetStar && firstClick)
+                            {
+                                targetStar = hits[0].collider.GetComponentInParent<Star>();
+                                time = 1;
+                                universe.SendShips(selectedStar.gameObject, targetStar.gameObject, false);
+                            }
+                            else
+                            {
+                                targetStar = hits[0].collider.GetComponentInParent<Star>();
+                            }
+
+                        }
+                        else
+                        {
+                            selectedStar = hits[0].collider.GetComponentInParent<Star>();
+                        }
                     }
                 }
             }

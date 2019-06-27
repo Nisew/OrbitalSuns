@@ -11,6 +11,8 @@ TagManager:
   - Light
   - BirthPoint
   - Universe
+  - Space
+  - StarSprite
   layers:
   - Default
   - TransparentFX

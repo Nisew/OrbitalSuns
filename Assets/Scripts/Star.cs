@@ -6,17 +6,21 @@ public class Star : MonoBehaviour
 {
     [Header("UNIVERSE LAWS")]
     Universe universe;
-    float time;
+    float time = 2;
 
     [Header("STAR INFO")]
     float temperature;
     enum starType { Yellow, Blue, Red };
-    [SerializeField] starType type;
+    [SerializeField]
+    starType type;
 
     [Header("STAR STATS")]
-    [SerializeField] Transform newSatellitePoint;
-    [SerializeField] Transform newSatellitePointChild;
-    [SerializeField] int civilization;
+    [SerializeField]
+    Transform newSatellitePoint;
+    [SerializeField]
+    Transform newSatellitePointChild;
+    [SerializeField]
+    int civilization;
 
     public float minShipOrbitRadius;
     public float maxShipOrbitRadius;
@@ -29,29 +33,37 @@ public class Star : MonoBehaviour
     int maxPanels;
 
     [Header("SATELLITE STATS")]
-    float shipCost;
+    float shipCost = 100;
     float shipAttack;
     float shipLife;
-    float shipShield;
+    bool shipShield;
 
     [Header("ENERGY FLOW")]
+    float energyWheel;
+    [SerializeField]
     float energyOutput;
+    float armyEnergyRatio;
+    [SerializeField]
     float armyEnergy;
+    float investEnergyRatio;
+    [SerializeField]
     float investEnergy;
 
     [Header("SATELLITE ARMY")]
-    [SerializeField] List<SpaceShip> Ships = new List<SpaceShip>();
+    [SerializeField]
+    List<SpaceShip> Ships = new List<SpaceShip>();
     //[SerializeField] List<SolarPanel> Panels = new List<SolarPanel>();
     List<SpaceShip> enemyShips = new List<SpaceShip>();
     int launchingShips;
     Vector2 target;
 
     [Header("SPRITE")]
-    [SerializeField] SpriteRenderer starSprite;
-    
-	void Start ()
+    [SerializeField]
+    SpriteRenderer starSprite;
+
+    void Start()
     {
-        if(type == starType.Yellow)
+        if (type == starType.Yellow)
         {
             shipOrbitSpeed = 50;
         }
@@ -67,41 +79,25 @@ public class Star : MonoBehaviour
 
     void Update()
     {
-        time += Time.deltaTime;
+        EnergyFlow();
 
-        if(time >= 1f)
+        if (enemyShips.Count > 0)
         {
-            time = 0;
-            SpaceShip();
-        }
+            //ALERT! ENEMIES
 
-        if(enemyShips.Count > 0)
-        {
-            if(Ships.Count <= 0)
+            if (Ships.Count <= 0)
             {
                 Surrender();
             }
         }
     }
 
-    public void CivShipStats(float _shipLife, float _shipCost, float _shipAttack, float _shipShield)
+    public void CivShipStats(float _shipLife, float _shipCost, float _shipAttack, bool _shipShield)
     {
         shipLife = _shipLife;
         shipCost = _shipCost;
         shipAttack = _shipAttack;
         shipShield = _shipShield;
-    }
-
-    void SpaceShip()
-    {
-        GameObject ship = universe.CreateSpaceShip(civilization);
-        SpaceShip shipScript = ship.GetComponent<SpaceShip>();
-
-        newSatellitePoint.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 360));
-        shipScript.NewParent(this);
-        shipScript.Create();
-
-        AddInArmy(shipScript);
     }
 
     #region ORBIT METHODS
@@ -131,7 +127,7 @@ public class Star : MonoBehaviour
 
     public void AddInArmy(SpaceShip satellite)
     {
-        if(!Ships.Contains(satellite))
+        if (!Ships.Contains(satellite))
         {
             Ships.Add(satellite);
         }
@@ -173,12 +169,12 @@ public class Star : MonoBehaviour
     {
         starSprite.transform.localScale = new Vector3(_volume, _volume, 1);
 
-        minShipOrbitRadius = minShipOrbitRadius * _volume;
-        maxShipOrbitRadius = maxShipOrbitRadius * _volume;
-        minPanelOrbitRadius = minPanelOrbitRadius * _volume;
-        maxPanelOrbitRadius = maxPanelOrbitRadius * _volume;
-        GetComponent<CircleCollider2D>().radius = _volume;
-        newSatellitePointChild.transform.localPosition = new Vector3(this.GetComponent<CircleCollider2D>().radius, 0, 0);
+        minShipOrbitRadius *= _volume;
+        maxShipOrbitRadius *= _volume;
+        minPanelOrbitRadius *= _volume;
+        maxPanelOrbitRadius *= _volume;
+        GetComponent<CircleCollider2D>().radius *= _volume;
+        newSatellitePointChild.transform.localPosition = new Vector2(newSatellitePointChild.transform.localPosition.x + GetComponent<CircleCollider2D>().radius, 0);
 
         temperature = _temperature;
         energyOutput = _energy;
@@ -194,13 +190,10 @@ public class Star : MonoBehaviour
         return civilization;
     }
 
-    public void SetUniverse(Universe everything)
-    {
-        universe = everything;
-    }
-
     #endregion
-    
+
+    #region WAR
+
     public void SendArmy(GameObject target, bool all)
     {
         if (all)
@@ -215,10 +208,19 @@ public class Star : MonoBehaviour
         else
         {
             launchingShips = Ships.Count;
-            for (int i = 0; i < launchingShips / 2; i++)
+
+            if(launchingShips == 1)
             {
                 Ships[0].SetTravelling(target);
                 RemoveFromArmy(Ships[0]);
+            }
+            else
+            {
+                for (int i = 0; i < launchingShips / 2; i++)
+                {
+                    Ships[0].SetTravelling(target);
+                    RemoveFromArmy(Ships[0]);
+                }
             }
         }
     }
@@ -251,6 +253,44 @@ public class Star : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region STAR CREATIONS
+
+    void EnergyFlow()
+    {
+        investEnergyRatio = (energyOutput / 100) * energyWheel;
+        armyEnergyRatio = energyOutput - investEnergyRatio;
+
+        armyEnergy += armyEnergyRatio * Time.deltaTime / time;
+        investEnergy += investEnergyRatio * Time.deltaTime / time;
+
+        if (armyEnergy >= shipCost)
+        {
+            armyEnergy = 0;
+            SpaceShip();
+        }
+    }
+
+    void SpaceShip()
+    {
+        GameObject ship = universe.CreateSpaceShip(civilization);
+        SpaceShip shipScript = ship.GetComponent<SpaceShip>();
+
+        newSatellitePoint.transform.rotation = Quaternion.Euler(0, 0, Random.Range(0, 360));
+        shipScript.NewParent(this);
+        shipScript.Create();
+
+        AddInArmy(shipScript);
+    }
+
+    #endregion
+
+    public float GetHyperDistance()
+    {
+        return maxPanelOrbitRadius;
+    }
+
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
@@ -259,6 +299,11 @@ public class Star : MonoBehaviour
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, minPanelOrbitRadius);
         Gizmos.DrawWireSphere(transform.position, maxPanelOrbitRadius);
+    }
+
+    public void SetUniverse(Universe everything)
+    {
+        universe = everything;
     }
 
 }

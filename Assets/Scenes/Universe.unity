@@ -167,16 +167,6 @@ Prefab:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: ba29f6c0eb4740c4e80eae33813b6b6b, type: 2}
-    - target: {fileID: 114644093196833780, guid: 04abf565c420e2c47ba0a32dc520ecf0,
-        type: 2}
-      propertyPath: minPanelOrbitRadius
-      value: 2.45
-      objectReference: {fileID: 0}
-    - target: {fileID: 114644093196833780, guid: 04abf565c420e2c47ba0a32dc520ecf0,
-        type: 2}
-      propertyPath: maxPanelOrbitRadius
-      value: 2.78
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 04abf565c420e2c47ba0a32dc520ecf0, type: 2}
   m_IsPrefabParent: 0
@@ -194,11 +184,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4428507830563612, guid: 88f0d143cbaec584aac87d93c022bd19, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -21.6
+      value: -19.3
       objectReference: {fileID: 0}
     - target: {fileID: 4428507830563612, guid: 88f0d143cbaec584aac87d93c022bd19, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 4.3
+      value: 5.4
       objectReference: {fileID: 0}
     - target: {fileID: 4428507830563612, guid: 88f0d143cbaec584aac87d93c022bd19, type: 2}
       propertyPath: m_LocalPosition.z
@@ -229,26 +219,6 @@ Prefab:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: ba29f6c0eb4740c4e80eae33813b6b6b, type: 2}
-    - target: {fileID: 114175872920971468, guid: 88f0d143cbaec584aac87d93c022bd19,
-        type: 2}
-      propertyPath: minPanelOrbitRadius
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 114175872920971468, guid: 88f0d143cbaec584aac87d93c022bd19,
-        type: 2}
-      propertyPath: maxPanelOrbitRadius
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 114175872920971468, guid: 88f0d143cbaec584aac87d93c022bd19,
-        type: 2}
-      propertyPath: minShipOrbitRadius
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 114175872920971468, guid: 88f0d143cbaec584aac87d93c022bd19,
-        type: 2}
-      propertyPath: maxShipOrbitRadius
-      value: 3
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 88f0d143cbaec584aac87d93c022bd19, type: 2}
   m_IsPrefabParent: 0
@@ -324,15 +294,9 @@ Prefab:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: ba29f6c0eb4740c4e80eae33813b6b6b, type: 2}
-    - target: {fileID: 114157705153982418, guid: 5cdb8cd272392bf4c94437d0e302cb1b,
-        type: 2}
-      propertyPath: minPanelOrbitRadius
-      value: 4.18
-      objectReference: {fileID: 0}
-    - target: {fileID: 114157705153982418, guid: 5cdb8cd272392bf4c94437d0e302cb1b,
-        type: 2}
-      propertyPath: maxPanelOrbitRadius
-      value: 5.36
+    - target: {fileID: 4916882545098690, guid: 5cdb8cd272392bf4c94437d0e302cb1b, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 5cdb8cd272392bf4c94437d0e302cb1b, type: 2}
@@ -719,11 +683,11 @@ Prefab:
     m_Modifications:
     - target: {fileID: 4932078860211720, guid: 7606058c0179178449a74b3ba73d2610, type: 2}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -11.5
       objectReference: {fileID: 0}
     - target: {fileID: 4932078860211720, guid: 7606058c0179178449a74b3ba73d2610, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -1.4
       objectReference: {fileID: 0}
     - target: {fileID: 4932078860211720, guid: 7606058c0179178449a74b3ba73d2610, type: 2}
       propertyPath: m_LocalPosition.z
@@ -748,6 +712,11 @@ Prefab:
     - target: {fileID: 4932078860211720, guid: 7606058c0179178449a74b3ba73d2610, type: 2}
       propertyPath: m_RootOrder
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 20659083228599560, guid: 7606058c0179178449a74b3ba73d2610,
+        type: 2}
+      propertyPath: orthographic size
+      value: 8.6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7606058c0179178449a74b3ba73d2610, type: 2}
