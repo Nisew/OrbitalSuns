@@ -145,6 +145,13 @@ public class Universe : MonoBehaviour
         return provisionalShip;
     }
 
+    public void SendShips(GameObject startStar, GameObject endStar, bool all)
+    {
+        startStar.GetComponent<Star>().SendArmy(endStar, all);
+    }
+
+    #endregion
+
     #region LIST METHODS
 
     public void AddActiveSpaceShip(GameObject ship)
@@ -180,22 +187,4 @@ public class Universe : MonoBehaviour
     }
 
     #endregion
-
-    public void SendShips(GameObject startStar, GameObject endStar, bool all)
-    {
-        startStar.GetComponent<Star>().SendArmy(endStar, all);
-    }
-
-    /*void CreateFewShips(int ships) //CREATES INACTIVE SHIPS
-    {
-        for(int i = 0; i < ships; i++)
-        {
-            GameObject ship = Instantiate(shipPrefab);
-            totalShips.Add(ship);
-            ship.SetActive(false);
-        }
-    }*/
-
-    #endregion
-
 }

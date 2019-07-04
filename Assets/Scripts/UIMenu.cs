@@ -7,21 +7,45 @@ using UnityEngine.SceneManagement;
 public class UIMenu : MonoBehaviour
 {
     [Header("Space Elements")]
+    Universe universe;
+
+    [Header("Canvas Elements")]
+    public GameObject panelObject;
+    public Slider energyWheelSlider;
+    public Text energyText;
+    public Text shipText;
+    Image starMiniature;
+
+    [Header("Star Elements")]
+    Star hostStar;
+    float energyWheel;
 
     [Header("UI Elements")]
-    public Text playerPowerText;
-    public Text totalPowerText;
-    public Text shipPowerText;
-    public Text starPowerText;
-    public Slider productionSlider;
+    public Image buttonImage;
+    public Color buttonSelected;
+    bool isGlowing;
+    bool menuOpen;
 
-    [Header("Star Values")]
-    public GameObject Star;
-    public float totalPower;
-    public float shipPower;
-    public float starPower;
+    void Start()
+    {
+        universe = GameObject.FindGameObjectWithTag("Universe").GetComponent<Universe>();
+    }
 
-    #region MENU METHODS
+    void Update()
+    {
+        if(hostStar != null && !isGlowing)
+        {
+            buttonImage.color = buttonSelected;
+            isGlowing = true;
+        }
+        if(hostStar == null && isGlowing)
+        {
+            buttonImage.color = new Color(0, 0, 0, 0);
+            isGlowing = false;
+        }
+    }
+
+    #region SCENE METHODS
 
     public void Play()
     {
@@ -30,41 +54,47 @@ public class UIMenu : MonoBehaviour
 
     #endregion
 
-    #region UI METHODS
-
-    public void UpdateStarPower(int power)
+    #region GAMEPLAY UI
+    
+    public void MoveWheel()
     {
-        playerPowerText.text = "" + power;
+        energyWheel = energyWheelSlider.value;
+        hostStar.EnergyWheelChange(energyWheel);
+
+        energyText.text = energyWheel + "%";
+        shipText.text = (100 - energyWheel) + "%";
     }
 
-    public void Slider()
+    public void UpdateHostStar(Star star)
     {
-        
+        hostStar = star;
+        //starMiniature = hostStar.GetMiniature();
     }
 
-    public void OpenStarMenu(GameObject panel)
+    public void ButtonLogic()
     {
-        if(!panel.activeInHierarchy)
+        if(!menuOpen)
         {
-            panel.SetActive(true);
+            panelObject.SetActive(true);
+            menuOpen = true;
+        }
+        else
+        {
+            panelObject.SetActive(false);
+            menuOpen = false;
         }
     }
 
-   /* public void GetStar()
+    public void CloseStarMenu()
     {
-        Star = spaceManager.selectedStar;
-
-        float[] starValues = new float[3];
-        starValues = Star.GetComponent<Star>().PassInfoToUI();
-        totalPower = starValues[0];
-        shipPower = starValues[1];
-        starPower = starValues[2];
-
-        totalPowerText.text = "" + totalPower;
-        starPowerText.text = starPower + "%";
-        shipPowerText.text = shipPower + "%";
-    }*/
+        panelObject.SetActive(false);
+        menuOpen = false;
+    }
 
     #endregion
 
+    public bool CheckMenuOpen()
+    {
+        return menuOpen;
+    }
 }

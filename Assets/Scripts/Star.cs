@@ -80,16 +80,7 @@ public class Star : MonoBehaviour
     void Update()
     {
         EnergyFlow();
-
-        if (enemyShips.Count > 0)
-        {
-            //ALERT! ENEMIES
-
-            if (Ships.Count <= 0)
-            {
-                Surrender();
-            }
-        }
+        CheckPerimeter();
     }
 
     public void CivShipStats(float _shipLife, float _shipCost, float _shipAttack, bool _shipShield)
@@ -194,6 +185,17 @@ public class Star : MonoBehaviour
 
     #region WAR
 
+    void CheckPerimeter()
+    {
+        if (enemyShips.Count > 0)
+        {
+            if (Ships.Count <= 0)
+            {
+                Surrender();
+            }
+        }
+    }
+
     public void SendArmy(GameObject target, bool all)
     {
         if (all)
@@ -257,10 +259,15 @@ public class Star : MonoBehaviour
 
     #region STAR CREATIONS
 
+    public void EnergyWheelChange(float value)
+    {
+        energyWheel = value;
+    }
+
     void EnergyFlow()
     {
         investEnergyRatio = (energyOutput / 100) * energyWheel;
-        armyEnergyRatio = energyOutput - investEnergyRatio;
+        armyEnergyRatio = (energyOutput / 100) * (100 - energyWheel);
 
         armyEnergy += armyEnergyRatio * Time.deltaTime / time;
         investEnergy += investEnergyRatio * Time.deltaTime / time;

@@ -173,7 +173,7 @@ public class SpaceShip : MonoBehaviour
         {
             transform.position = Vector2.MoveTowards(transform.position, destiny.gameObject.transform.position, relativeSpeed * Time.deltaTime);
 
-            if(!CheckDistanceWithOrigin())
+            /*if(!CheckDistanceWithOrigin())
             {
                 if(!CheckDistanceWithDestiny() && relativeSpeed < hyperSpeed && !goingHyper)
                 {
@@ -188,7 +188,7 @@ public class SpaceShip : MonoBehaviour
                     time = 0;
                     stopingHyper = true;
                 }
-            }
+            }*/
 
             if (Vector2.Distance(transform.position, destiny.transform.position) <= orbitRadius) //ARRIVED DESTINY
             {
