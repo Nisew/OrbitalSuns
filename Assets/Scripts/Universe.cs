@@ -4,54 +4,26 @@ using UnityEngine;
 
 public class Universe : MonoBehaviour
 {
-    [Header("UNIVERSE LAWS")]
-    float time;
-    float doubleClickTime = 0.5f;
-    float clickTime;
-    bool firstClick;
+    [Header("LISTS")]
+    List<Star> starList = new List<Star>();
+    [SerializeField]
+    List<SpaceShip> unactiveShipList = new List<SpaceShip>();
+    [SerializeField]
+    List<SpaceShip> activeShipList = new List<SpaceShip>();
 
-    [Header("STAR CLUSTERS")]
-    List<Star> starCluster = new List<Star>();
-    
-    float yellowMinTemp = 5000;
-    float yellowMaxTemp = 7700;
-    float yellowMinVolume = 1.5f;
-    float yellowMaxVolume = 2;
-    float yellowMinEnergyOutput = 235;
-    float yellowMaxEnergyOutput = 265;
-
-    float blueMinTemp = 27000;
-    float blueMaxTemp = 34000;
-    float blueMinVolume = 0.5f;
-    float blueMaxVolume = 1;
-    float blueMinEnergyOutput = 255;
-    float blueMaxEnergyOutput = 275;
-
-    float redMinTemp = 4000;
-    float redMaxTemp = 6500;
-    float redMinVolume = 4;
-    float redMaxVolume = 6;
-    float redMinEnergyOutput = 220;
-    float redMaxEnergyOutput = 240;
-
-    [Header("SATELLITES")]
-    List<GameObject> spaceShipActiveList = new List<GameObject>();
-    List<GameObject> spaceShipUnactiveList = new List<GameObject>();
-    List<GameObject> solarPanelActiveList = new List<GameObject>();
-    List<GameObject> solarPanelUnactiveList = new List<GameObject>();
-    List<GameObject> cometList = new List<GameObject>();
-    [SerializeField] GameObject solarPanel;
+    [Header("PREFABS")]
     [SerializeField] GameObject spaceShip;
     [SerializeField] GameObject comet;
 
-    [Header("CIVILIZATIONS")]
-    [SerializeField] Color civilization1;
-    [SerializeField] Color civilization2;
-    GameObject selectedStar;
-    GameObject destinyStar;
+    [Header("STAR NAVIGATION")]
+    float time;
+    bool firstClic;
+    Star selectedStar;
+    Star destinyStar;
 
-    [Header("UI")]
-    UIMenu UIScript;
+    [SerializeField] Color playerColor0;
+    [SerializeField] Color playerColor1;
+    [SerializeField] Color playerColor2;
 
     void Awake()
     {
@@ -65,11 +37,9 @@ public class Universe : MonoBehaviour
 	
 	void Update()
     {
-
+        if (firstClic) CheckDoubleClic();
 	}
-
-    #region CREATION OF MATTER
-
+    
     public void BigBang()
     {
         GameObject[] gasClouds;
@@ -78,113 +48,149 @@ public class Universe : MonoBehaviour
 
         foreach(GameObject star in gasClouds)
         {
-            if(star.GetComponent<Star>())
-            {
-                Star starScript = star.GetComponent<Star>();
-
-                string starType = star.GetComponent<Star>().typeOfStar();
-                float temp = 0;
-                float volume = 0;
-                float energy = 0;
-
-                switch (starType)
-                {
-                    case ("Yellow"):
-                        volume = Random.Range(yellowMinVolume, yellowMaxVolume);
-                        temp = Random.Range(yellowMinTemp, yellowMaxTemp);
-                        energy = Random.Range(yellowMinEnergyOutput, yellowMaxEnergyOutput);
-                    break;
-
-                    case ("Blue"):
-                        volume = Random.Range(blueMinVolume, blueMaxVolume);
-                        temp = Random.Range(blueMinTemp, blueMaxTemp);
-                        energy = Random.Range(blueMinEnergyOutput, blueMaxEnergyOutput);
-                        break;
-
-                    case ("Red"):
-                        volume = Random.Range(redMinVolume, redMaxVolume);
-                        temp = Random.Range(redMinTemp, redMaxTemp);
-                        energy = Random.Range(redMinEnergyOutput, redMaxEnergyOutput);
-                        break;
-                }
-
-                starScript.SetProperties(temp, volume, energy);
-                starScript.SetUniverse(this);
-                starCluster.Add(starScript);
-            }
-        }        
+            Star starScript = star.GetComponent<Star>();
+            starScript.SetUniverse(this);
+            starList.Add(starScript);
+        }
     }
 
-    public GameObject CreateSpaceShip(int civ)
+    public Color GetPlayerColor(int player)
     {
-        GameObject provisionalShip;
-        Color civilizationColor = new Color();
+        Color provColor;
 
-        if(civ == 1)
+        switch (player)
         {
-            civilizationColor = civilization1;
-        }
-        if (civ == 2)
-        {
-            civilizationColor = civilization2;
+            case 0:
+                provColor = playerColor0;
+                break;
+
+            case 1:
+                provColor = playerColor1;
+                break;
+
+            case 2:
+                provColor = playerColor2;
+                break;
+            default:
+                provColor = playerColor0;
+                break;
         }
 
-        if (spaceShipUnactiveList.Count <= 0)
+        return provColor;
+    }
+
+    public SpaceShip CreateSpaceShip()
+    {
+        SpaceShip newSpaceShip;
+
+        if(unactiveShipList.Count == 0)
         {
-            provisionalShip = Instantiate(spaceShip);
-            AddActiveSpaceShip(provisionalShip);
+            newSpaceShip = Instantiate(spaceShip).GetComponent<SpaceShip>();
         }
         else
         {
-            provisionalShip = spaceShipUnactiveList[0];
-            RemoveUnactiveSpaceShip(provisionalShip);
-            AddActiveSpaceShip(provisionalShip);
+            newSpaceShip = unactiveShipList[0];
+            RemoveUnactiveShip(newSpaceShip);
         }
-        provisionalShip.GetComponent<SpaceShip>().Tint(civilizationColor);
-        provisionalShip.SetActive(true);
-        return provisionalShip;
+
+        AddActiveShip(newSpaceShip);
+        return newSpaceShip;
     }
 
-    public void SendShips(GameObject startStar, GameObject endStar, bool all)
+    public void StarTouched(Star touchedStar)
     {
-        startStar.GetComponent<Star>().SendArmy(endStar, all);
+        if(selectedStar == null)
+        {
+            selectedStar = touchedStar;
+            selectedStar.Selected(true);
+        }
+        else if(touchedStar != selectedStar && touchedStar != destinyStar)
+        {
+            destinyStar = touchedStar;
+            selectedStar.SendHalfShips(destinyStar);
+            firstClic = true;
+        }
+        else
+        {
+            selectedStar.SendAllShips(destinyStar);
+            time = 0;
+            firstClic = false;
+            selectedStar.Selected(false);
+            selectedStar = null;
+            destinyStar = null;
+        }
+    }
+
+    public void VoidTouched()
+    {
+        if(selectedStar != null)
+        {
+            selectedStar.Selected(false);
+            selectedStar = null;
+        }
+    }
+    
+    void CheckDoubleClic()
+    {
+        if (time >= 0.5f)
+        {
+            firstClic = false;
+            destinyStar = null;
+            time = 0;
+        }
+        else time += Time.deltaTime;
+    }
+
+    #region SHIPS LIST MANAGEMENT
+
+    void AddUnactiveShip(SpaceShip ship)
+    {
+        if (!unactiveShipList.Contains(ship))
+        {
+            unactiveShipList.Add(ship);
+        }
+        else
+        {
+            Debug.Log("Ship already in unactive list");            
+        }
+    }
+
+    void RemoveUnactiveShip(SpaceShip ship)
+    {
+        if(unactiveShipList.Contains(ship))
+        {
+            unactiveShipList.Remove(ship);
+        }
+        else
+        {
+            Debug.Log("Ship is not in unactive list");
+        }
+    }
+
+    void AddActiveShip(SpaceShip ship)
+    {
+        if (!activeShipList.Contains(ship))
+        {
+            activeShipList.Add(ship);
+        }
+        else
+        {
+            Debug.Log("Ship already in the active list");
+        }
+    }
+
+    void RemoveActiveShip(SpaceShip ship)
+    {
+        if (activeShipList.Contains(ship))
+        {
+            activeShipList.Remove(ship);
+        }
+        else
+        {
+            Debug.Log("Ship is not in active list");
+        }
     }
 
     #endregion
 
-    #region LIST METHODS
-
-    public void AddActiveSpaceShip(GameObject ship)
-    {
-        if(!spaceShipActiveList.Contains(ship) && !spaceShipUnactiveList.Contains(ship))
-        {
-            spaceShipActiveList.Add(ship);
-        }
-    }
-
-    public void RemoveActiveSpaceShip(GameObject ship)
-    {
-        if (spaceShipActiveList.Contains(ship))
-        {
-            spaceShipActiveList.Remove(ship);
-        }
-    }
-
-    public void AddUnactiveSpaceShip(GameObject ship)
-    {
-        if (!spaceShipUnactiveList.Contains(ship) && !spaceShipActiveList.Contains(ship))
-        {
-            spaceShipUnactiveList.Add(ship);
-        }
-    }
-
-    public void RemoveUnactiveSpaceShip(GameObject ship)
-    {
-        if (spaceShipUnactiveList.Contains(ship))
-        {
-            spaceShipUnactiveList.Remove(ship);
-        }
-    }
-
-    #endregion
 }
