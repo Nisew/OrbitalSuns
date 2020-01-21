@@ -28,11 +28,6 @@ public class Universe : MonoBehaviour
         BigBang();
     }
 
-	void Start()
-    {
-
-	}
-	
 	void Update()
     {
         if (firstClic) CheckDoubleClic();
@@ -51,7 +46,6 @@ public class Universe : MonoBehaviour
             starList.Add(starScript);
         }
     }
-
     public Color GetPlayerColor(int player)
     {
         Color provColor;
@@ -76,7 +70,6 @@ public class Universe : MonoBehaviour
 
         return provColor;
     }
-
     public SpaceShip CreateSpaceShip()
     {
         SpaceShip newSpaceShip;
@@ -94,13 +87,11 @@ public class Universe : MonoBehaviour
         AddActiveShip(newSpaceShip);
         return newSpaceShip;
     }
-
     public Asteroid CreateAsteroid()
     {
         Asteroid provisionalAsteroid = Instantiate(asteroid.GetComponent<Asteroid>());
         return provisionalAsteroid;
     }
-
     public void StarTouched(Star touchedStar)
     {
         if(selectedStar == null)
@@ -124,7 +115,6 @@ public class Universe : MonoBehaviour
             destinyStar = null;
         }
     }
-
     public void VoidTouched()
     {
         if(selectedStar != null)
@@ -132,8 +122,7 @@ public class Universe : MonoBehaviour
             selectedStar.Selected(false);
             selectedStar = null;
         }
-    }
-    
+    }    
     void CheckDoubleClic()
     {
         if (time >= 0.5f)
@@ -158,7 +147,6 @@ public class Universe : MonoBehaviour
             Debug.Log("Ship already in unactive list");            
         }
     }
-
     void RemoveUnactiveShip(SpaceShip ship)
     {
         if(unactiveShipList.Contains(ship))
@@ -170,7 +158,6 @@ public class Universe : MonoBehaviour
             Debug.Log("Ship is not in unactive list");
         }
     }
-
     void AddActiveShip(SpaceShip ship)
     {
         if (!activeShipList.Contains(ship))
@@ -182,7 +169,6 @@ public class Universe : MonoBehaviour
             Debug.Log("Ship already in the active list");
         }
     }
-
     public void RemoveActiveShip(SpaceShip ship)
     {
         if (activeShipList.Contains(ship))

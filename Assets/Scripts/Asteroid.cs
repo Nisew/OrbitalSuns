@@ -8,6 +8,7 @@ public class Asteroid : MonoBehaviour
     Star orbitalParent;
     float orbitRadius;
     float orbitSpeed;
+    float rotationSpeed;
     int orbitDirection;
     Vector3 desiredPosition;
 
@@ -49,8 +50,7 @@ public class Asteroid : MonoBehaviour
         {
             orbitDirection = -1;
             transform.rotation = Quaternion.Euler(0.0f, 0.0f, rotationZ);
-        }
-        
+        }        
     }
 
     void Orbiting()
@@ -58,6 +58,7 @@ public class Asteroid : MonoBehaviour
         transform.RotateAround(orbitalParent.transform.position, new Vector3(0, 0, orbitDirection), orbitSpeed * Time.deltaTime);
         desiredPosition = (transform.position - orbitalParent.transform.position).normalized * orbitRadius + orbitalParent.transform.position;
         transform.position = Vector2.MoveTowards(transform.position, desiredPosition, Time.deltaTime * 0.1f);
+        transform.Rotate(new Vector3(0, 0, rotationSpeed));
 
         if (isFighting)
         {
@@ -89,6 +90,16 @@ public class Asteroid : MonoBehaviour
     void SetRandomSpeed()
     {
         orbitSpeed = Random.Range(4, 7);
+        int random = Random.Range(0, 2);
+
+        if(random == 0)
+        {
+            rotationSpeed = Random.Range(0.2f, 0.5f);
+        }
+        else
+        {
+            rotationSpeed = Random.Range(-0.2f, -0.5f);
+        }
     }
 
 }
