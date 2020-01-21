@@ -28,6 +28,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4916882545098690}
+  - {fileID: 1402115064674980149}
   m_Father: {fileID: 4181370468316034}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -80,7 +81,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d690f86fddfa8534c8b0c4152b0b4ff9, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -141,7 +142,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4916882545098690}
   m_Layer: 0
-  m_Name: BirthPoint
+  m_Name: ShipBirthPoint
   m_TagString: Untagged
   m_Icon: {fileID: -5397416234189338067, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -155,7 +156,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1612671820452958}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.5, y: 0, z: 0}
+  m_LocalPosition: {x: -2.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4025169234970846}
@@ -207,14 +208,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09f3bcae4df4db54cba189240a01d174, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  newShipTransform: {fileID: 4916882545098690}
+  player: 0
+  lightTexture: {fileID: 1442391980313066}
+  targetTexture: {fileID: 6607702782139830415}
+  newShipGameobjectTransform: {fileID: 4916882545098690}
+  newAsteroidGameobjectTransform: {fileID: 1402115064674980149}
+  friendlyShips: []
+  enemyShips: []
+  asteroidCount: 0
   minShipOrbitRadius: 4
   maxShipOrbitRadius: 6
   minEnemyShipOrbitRadius: 6.5
   maxEnemyShipOrbitRadius: 8.5
-  player: 0
-  lightTexture: {fileID: 1442391980313066}
-  targetTexture: {fileID: 6607702782139830415}
 --- !u!58 &58916503463136018
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -302,7 +307,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 437abccd00279cd46a45e573f4901fe1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -333,6 +338,36 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!1 &455634839074071713
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1402115064674980149}
+  m_Layer: 0
+  m_Name: AsteroidBirthPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: -5397416234189338067, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1402115064674980149
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 455634839074071713}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -7.47, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4025169234970846}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6607702782139830415
 GameObject:
   m_ObjectHideFlags: 0

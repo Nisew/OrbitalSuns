@@ -3,29 +3,26 @@ using System.Collections;
 
 public class SpaceShip : MonoBehaviour
 {
-    float time;
+    [Header("SHIP PARAMETERS")]
     int player;
-    
+    float time;
     enum State { Inactive, Orbiting, Travelling}
     State shipState;
+    bool isFighting;
+    float destroyCounter;
 
     [Header("ORBIT PARAMETERS")]
     Star orbitalParent;
-    Vector3 desiredPosition;
     float orbitRadius;
     float orbitSpeed;
-    float wiggleSpeed;
+    float orbitLateralSpeed;
     int orbitDirection;
+    Vector3 desiredPosition;
 
     [Header("TRAVEL PARAMETERS")]
     Star destiny;
     float launchTime;
-    float speed = 5;
-
-    void Start()
-    {
-
-    }
+    float interstellarSpeed = 5;
 
     public void Update()
     {
@@ -51,12 +48,11 @@ public class SpaceShip : MonoBehaviour
     {
         
     }
-
     void Orbiting()
     {
         transform.RotateAround(orbitalParent.transform.position, new Vector3(0, 0, orbitDirection), orbitSpeed * Time.deltaTime);
         desiredPosition = (transform.position - orbitalParent.transform.position).normalized * orbitRadius + orbitalParent.transform.position;
-        transform.position = Vector2.MoveTowards(transform.position, desiredPosition, Time.deltaTime * wiggleSpeed);
+        transform.position = Vector2.MoveTowards(transform.position, desiredPosition, Time.deltaTime * orbitLateralSpeed);
 
         if (time >= 5)
         {
@@ -64,47 +60,53 @@ public class SpaceShip : MonoBehaviour
             orbitRadius = GetOrbitRadius();
         }
         else time += Time.deltaTime;
-    }
 
+        if(isFighting)
+        {
+            if (destroyCounter <= 0)
+            {
+                orbitalParent.ShipDead(this);
+                isFighting = false;
+            }
+            else destroyCounter -= Time.deltaTime;
+        }
+    }
     void Travelling()
     {
-        transform.position = Vector2.MoveTowards(transform.position, destiny.transform.position, speed * Time.deltaTime);
+        transform.position = Vector2.MoveTowards(transform.position, destiny.transform.position, interstellarSpeed * Time.deltaTime);
 
         if (Vector2.Distance(transform.position, destiny.transform.position) <= destiny.GetEnemyShipOrbitRadius()) //ARRIVED DESTINY
         {
-            orbitRadius = GetOrbitRadius();
+            SetRandomSpeed();
             SetOrbiting(destiny);
         }
     }
 
     #endregion
 
-    float GetOrbitRadius()
-    {
-        if (orbitalParent.GetPlayer() == player)
-        {
-            return orbitalParent.GetShipOrbitRadius();
-        }
-        else return orbitalParent.GetEnemyShipOrbitRadius();
-    }
-
-    void SetInactive()
+    #region SET METHODS
+    
+    public void SetInactive()
     {
         this.gameObject.SetActive(false);
         shipState = State.Inactive;
     }
-
     void SetOrbiting(Star _orbitalParent)
     {
         orbitalParent = _orbitalParent;
+        orbitRadius = GetOrbitRadius();
 
         if(orbitalParent.GetPlayer() == player)
         {
             orbitalParent.AddFriendlyShipToList(this);
         }
+        else if(orbitalParent.GetPlayer() == 0)
+        {
+
+        }
         else
         {
-            orbitalParent.AddEnemyShipToList(this);
+            orbitalParent.AddEnemyShipToOrbit(this);
         }
 
         Vector2 difference = (Vector2)orbitalParent.transform.position - new Vector2(transform.position.x, transform.position.y);
@@ -124,35 +126,57 @@ public class SpaceShip : MonoBehaviour
 
         shipState = State.Orbiting;
     }
-
     public void SetTravelling(Star target)
     {
         transform.up = target.transform.position - transform.position;
         destiny = target;
         shipState = State.Travelling;
     }
+    public void SetFighting(float time)
+    {
+        destroyCounter = time;
+        isFighting = true;
+    }
+
+    #endregion
+
+    #region GET METHODS
+
+    float GetOrbitRadius()
+    {
+        if (orbitalParent.GetPlayer() == player)
+        {
+            return orbitalParent.GetShipOrbitRadius();
+        }
+        else return orbitalParent.GetEnemyShipOrbitRadius();
+    }
+    public int GetPlayer()
+    {
+        return player;
+    }
+    public bool GetFighting()
+    {
+        return isFighting;
+    }
+
+    #endregion
     
     public void BornInStar(Star parent)
     {
+        this.gameObject.SetActive(true);
         orbitalParent = parent;
         player = orbitalParent.GetPlayer();
         gameObject.transform.position = orbitalParent.GetShipBirthPoint().position;
         GetComponentInChildren<SpriteRenderer>().color = parent.GetColor();
 
-        SetOrbitSpeed();
+        SetRandomSpeed();
         SetOrbiting(parent);
     }
-
-    void SetOrbitSpeed()
+    void SetRandomSpeed()
     {
-        orbitRadius = orbitalParent.GetShipOrbitRadius();
         orbitSpeed = Random.Range(70, 100);
-        wiggleSpeed = Random.Range(0.5f, 1);
-    }
-    
-    public void Destroy(SpaceShip ship)
-    {
-
+        orbitLateralSpeed = Random.Range(0.5f, 1);
+        interstellarSpeed = Random.Range(8, 9);
     }
     
 }

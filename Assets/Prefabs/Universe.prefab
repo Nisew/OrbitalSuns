@@ -1,22 +1,12 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &100100000
-Prefab:
-  m_ObjectHideFlags: 1
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications: []
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1339912253264758}
-  m_IsPrefabParent: 1
 --- !u!1 &1339912253264758
 GameObject:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 5
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
   m_Component:
   - component: {fileID: 4236186304956396}
   - component: {fileID: 114012393424923466}
@@ -30,9 +20,10 @@ GameObject:
   m_IsActive: 1
 --- !u!4 &4236186304956396
 Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1339912253264758}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -43,30 +34,33 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &114012393424923466
 MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1339912253264758}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eb78fcf305e63ef479a0ea0fad7088c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  solarPanel: {fileID: 0}
-  spaceShip: {fileID: 1692795689382218, guid: 9eef33ecfd5cd9244845a48116685611, type: 2}
-  comet: {fileID: 0}
-  civilization1: {r: 0.49264705, g: 0.6011156, b: 1, a: 1}
-  civilization2: {r: 0.9558824, g: 0.9384323, b: 0.32331318, a: 1}
+  unactiveShipList: []
+  activeShipList: []
+  spaceShip: {fileID: 1692795689382218, guid: 9eef33ecfd5cd9244845a48116685611, type: 3}
+  asteroid: {fileID: 9078514792666244355, guid: c7e98c73003642e429199ec9d4501416,
+    type: 3}
+  playerColor0: {r: 1, g: 1, b: 1, a: 1}
+  playerColor1: {r: 1, g: 0.9891684, b: 0.5613208, a: 1}
+  playerColor2: {r: 0.65603614, g: 0.504717, b: 1, a: 1}
 --- !u!114 &114368435811722066
 MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1339912253264758}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d5c57c2a7eb9b9840ba9c6522de1f98e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedStar: {fileID: 0}
-  targetStar: {fileID: 0}

@@ -10,8 +10,7 @@ public class Controls : MonoBehaviour
 	void Start ()
     {
         universe = GameObject.FindGameObjectWithTag("Universe").GetComponent<Universe>();
-    }
-	
+    }	
 	void Update ()
     {/*
         if(Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began) //CLIC
@@ -71,10 +70,9 @@ public class Controls : MonoBehaviour
             Camera.main.transform.position += direction;
         }
 
-        Zoom(Input.GetAxis("Mouse ScrollWheel") * 20);
+        Zoom(Input.GetAxis("Mouse ScrollWheel") * 20); //ZOOM MOUSE
 
     }
-
     void Zoom(float increment)
     {
         Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - increment, 20, 70);

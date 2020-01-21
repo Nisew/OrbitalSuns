@@ -6,14 +6,12 @@ public class Universe : MonoBehaviour
 {
     [Header("LISTS")]
     List<Star> starList = new List<Star>();
-    [SerializeField]
     List<SpaceShip> unactiveShipList = new List<SpaceShip>();
-    [SerializeField]
     List<SpaceShip> activeShipList = new List<SpaceShip>();
 
     [Header("PREFABS")]
     [SerializeField] GameObject spaceShip;
-    [SerializeField] GameObject comet;
+    [SerializeField] GameObject asteroid;
 
     [Header("STAR NAVIGATION")]
     float time;
@@ -97,6 +95,12 @@ public class Universe : MonoBehaviour
         return newSpaceShip;
     }
 
+    public Asteroid CreateAsteroid()
+    {
+        Asteroid provisionalAsteroid = Instantiate(asteroid.GetComponent<Asteroid>());
+        return provisionalAsteroid;
+    }
+
     public void StarTouched(Star touchedStar)
     {
         if(selectedStar == null)
@@ -143,7 +147,7 @@ public class Universe : MonoBehaviour
 
     #region SHIPS LIST MANAGEMENT
 
-    void AddUnactiveShip(SpaceShip ship)
+    public void AddUnactiveShip(SpaceShip ship)
     {
         if (!unactiveShipList.Contains(ship))
         {
@@ -179,7 +183,7 @@ public class Universe : MonoBehaviour
         }
     }
 
-    void RemoveActiveShip(SpaceShip ship)
+    public void RemoveActiveShip(SpaceShip ship)
     {
         if (activeShipList.Contains(ship))
         {
