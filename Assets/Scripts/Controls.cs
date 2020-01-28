@@ -84,7 +84,7 @@ public class Controls : MonoBehaviour
     }
     void Zoom(float increment)
     {
-        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - increment, 15, 40);
+        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - increment, 10, 80);
     }
     
 }

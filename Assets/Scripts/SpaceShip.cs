@@ -21,6 +21,7 @@ public class SpaceShip : MonoBehaviour
 
     [Header("TRAVEL PARAMETERS")]
     Star destiny;
+    Vector2 destinyPosition;
     float launchTime;
     float interstellarSpeed = 5;
 
@@ -54,7 +55,7 @@ public class SpaceShip : MonoBehaviour
         desiredPosition = (transform.position - orbitalParent.transform.position).normalized * orbitRadius + orbitalParent.transform.position;
         transform.position = Vector2.MoveTowards(transform.position, desiredPosition, Time.deltaTime * orbitLateralSpeed);
 
-        if (time >= 2.5f)
+        if (time >= 5)
         {
             time = 0;
             orbitRadius = GetOrbitRadius();
@@ -73,7 +74,7 @@ public class SpaceShip : MonoBehaviour
     }
     void Travelling()
     {
-        transform.position = Vector2.MoveTowards(transform.position, destiny.transform.position, interstellarSpeed * Time.deltaTime);
+        transform.position = Vector2.MoveTowards(transform.position, destinyPosition, interstellarSpeed * Time.deltaTime);
 
         if (Vector2.Distance(transform.position, destiny.transform.position) <= destiny.GetEnemyShipOrbitRadius()) //ARRIVED DESTINY
         {
@@ -126,6 +127,7 @@ public class SpaceShip : MonoBehaviour
     {
         transform.up = target.transform.position - transform.position;
         destiny = target;
+        destinyPosition = (Vector2)destiny.transform.position + Random.insideUnitCircle * 5;
         shipState = State.Travelling;
     }
     public void SetFighting(float time)
@@ -159,11 +161,18 @@ public class SpaceShip : MonoBehaviour
     
     public void BornInStar(Star parent)
     {
+        Color parentColor = parent.GetColor();
+        TrailRenderer trail = GetComponent<TrailRenderer>();
+
         this.gameObject.SetActive(true);
         orbitalParent = parent;
         player = orbitalParent.GetPlayer();
         gameObject.transform.position = orbitalParent.GetShipBirthPoint().position;
-        GetComponentInChildren<SpriteRenderer>().color = parent.GetColor();
+        GetComponentInChildren<SpriteRenderer>().color = parentColor;
+
+        trail.Clear();
+        trail.startColor = new Color(parentColor.r, parentColor.g, parentColor.b, 0.4f);
+        trail.endColor = new Color(parentColor.r, parentColor.g, parentColor.b, 0);
 
         SetRandomSpeed();
         SetOrbiting(parent);
@@ -171,8 +180,8 @@ public class SpaceShip : MonoBehaviour
     void SetRandomSpeed()
     {
         orbitSpeed = Random.Range(40, 60);
-        orbitLateralSpeed = Random.Range(1.5f, 2);
-        interstellarSpeed = Random.Range(8, 9);
+        orbitLateralSpeed = Random.Range(0.5f, 1);
+        interstellarSpeed = Random.Range(7, 9);
     }
     
 }

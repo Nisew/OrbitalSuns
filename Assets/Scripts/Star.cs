@@ -256,7 +256,7 @@ public class Star : MonoBehaviour
     {
         player = _player;
         playerColor = universe.GetPlayerColor(_player);
-        lightTexture.GetComponent<SpriteRenderer>().color = new Color(playerColor.r, playerColor.g, playerColor.b, 0.4f);
+        lightTexture.GetComponent<SpriteRenderer>().color = new Color(playerColor.r, playerColor.g, playerColor.b, 0.5f);
 
         if(player == 0)
         {
