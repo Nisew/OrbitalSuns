@@ -34,7 +34,11 @@ public class Star : MonoBehaviour
 
     void Update()
     {
-        if(inWar) War();
+        if (inWar)
+        {
+            if (player != 0) ShipWar();
+            else AsteroidWar();
+        }
         switch (starState)
         {
             case State.Neutral:
@@ -70,7 +74,7 @@ public class Star : MonoBehaviour
     }
     void ShipFactory()
     {
-        if(shipTime > 1)
+        if(shipTime > 2.6f)
         {
             CreateSpaceShip();
             shipTime = 0;
@@ -115,17 +119,20 @@ public class Star : MonoBehaviour
     {
         friendlyShips.Add(friendlyShip);
     }
-    public void AddEnemyShipToList(SpaceShip enemyShip)
-    {
-        enemyShips.Add(enemyShip);
-    }
     public void AddEnemyShipToOrbit(SpaceShip enemyShip)
     {
         AddEnemyShipToList(enemyShip);
 
-        if(friendlyShips.Count > 0)
+        if(friendlyShips.Count > 0 || asteroidCount > 0)
         {
-            if (!inWar) inWar = true;
+            if (!inWar)
+            {
+                inWar = true;
+            }
+        }
+        else
+        {
+            LostWar();
         }
     }
     public void ShipDead(SpaceShip ship)
@@ -148,12 +155,16 @@ public class Star : MonoBehaviour
             enemyShips.Remove(ship);
         }
     }
+    public void AddEnemyShipToList(SpaceShip enemyShip)
+    {
+        enemyShips.Add(enemyShip);
+    }
 
     #endregion
 
     #region STAR METHODS
 
-    void War()
+    void ShipWar()
     {
         SpaceShip enemyShip = null;
         SpaceShip friendlyShip = null;
@@ -178,10 +189,41 @@ public class Star : MonoBehaviour
 
         if(enemyShip != null && friendlyShip != null)
         {
-            float randomNum = Random.Range(0.5f, 1.5f);
+            float randomNum = Random.Range(1.5f, 2.5f);
             enemyShip.SetFighting(randomNum);
             friendlyShip.SetFighting(randomNum);
         }
+    }
+    void AsteroidWar()
+    {
+        SpaceShip enemyShip = null;
+        Asteroid asteroid = null;
+
+        for (int i = 0; i < enemyShips.Count; i++)
+        {
+            if (!enemyShips[i].GetFighting())
+            {
+                enemyShip = enemyShips[i];
+                break;
+            }
+        }
+
+        for (int i = 0; i < asteroidList.Count; i++)
+        {
+            if (!asteroidList[i].GetFighting())
+            {
+                asteroid = asteroidList[i];
+                break;
+            }
+        }
+
+        if (enemyShip != null && asteroid != null)
+        {
+            float randomNum = Random.Range(1.5f, 2.5f);
+            enemyShip.SetFighting(randomNum);
+            asteroid.SetFighting(randomNum);
+        }
+
     }
     void CreateAsteroids()
     {
@@ -226,13 +268,20 @@ public class Star : MonoBehaviour
             SetShipFactory();
         }
     }
-    public void AsteroidDestroyed()
-    {
-
-    }
     public void Selected(bool isSelected)
     {
         targetTexture.gameObject.SetActive(isSelected);
+    }
+    public void AsteroidDestroyed(Asteroid asteroid)
+    {
+        asteroidList.Remove(asteroid);
+        asteroid.gameObject.SetActive(false);
+        asteroidCount--;
+
+        if(asteroidCount <= 0 && enemyShips.Count > 0)
+        {
+            LostWar();
+        }
     }
 
     #endregion

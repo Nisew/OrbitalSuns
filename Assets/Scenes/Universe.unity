@@ -303,6 +303,24 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114012393424923466, guid: b4daacac7cb156141a2ad0076ea2e65c,
+        type: 3}
+      propertyPath: asteroid0
+      value: 
+      objectReference: {fileID: -5766033097715662417, guid: 0957a7190726941418e917ed60651d8e,
+        type: 3}
+    - target: {fileID: 114012393424923466, guid: b4daacac7cb156141a2ad0076ea2e65c,
+        type: 3}
+      propertyPath: asteroid1
+      value: 
+      objectReference: {fileID: 3577993227607710454, guid: 0957a7190726941418e917ed60651d8e,
+        type: 3}
+    - target: {fileID: 114012393424923466, guid: b4daacac7cb156141a2ad0076ea2e65c,
+        type: 3}
+      propertyPath: asteroid2
+      value: 
+      objectReference: {fileID: -5855003014915806325, guid: 0957a7190726941418e917ed60651d8e,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b4daacac7cb156141a2ad0076ea2e65c, type: 3}
 --- !u!1001 &1859933368

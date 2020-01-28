@@ -54,7 +54,7 @@ public class SpaceShip : MonoBehaviour
         desiredPosition = (transform.position - orbitalParent.transform.position).normalized * orbitRadius + orbitalParent.transform.position;
         transform.position = Vector2.MoveTowards(transform.position, desiredPosition, Time.deltaTime * orbitLateralSpeed);
 
-        if (time >= 5)
+        if (time >= 2.5f)
         {
             time = 0;
             orbitRadius = GetOrbitRadius();
@@ -99,10 +99,6 @@ public class SpaceShip : MonoBehaviour
         if(orbitalParent.GetPlayer() == player)
         {
             orbitalParent.AddFriendlyShipToList(this);
-        }
-        else if(orbitalParent.GetPlayer() == 0)
-        {
-
         }
         else
         {
@@ -174,8 +170,8 @@ public class SpaceShip : MonoBehaviour
     }
     void SetRandomSpeed()
     {
-        orbitSpeed = Random.Range(70, 100);
-        orbitLateralSpeed = Random.Range(0.5f, 1);
+        orbitSpeed = Random.Range(40, 60);
+        orbitLateralSpeed = Random.Range(1.5f, 2);
         interstellarSpeed = Random.Range(8, 9);
     }
     

@@ -12,7 +12,7 @@ public class Controls : MonoBehaviour
         universe = GameObject.FindGameObjectWithTag("Universe").GetComponent<Universe>();
     }	
 	void Update ()
-    {/*
+    {
         if(Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began) //CLIC
         {
             touchStart = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
@@ -27,7 +27,7 @@ public class Controls : MonoBehaviour
                 universe.VoidTouched();
             }
         }
-        else if(Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Moved) //PANNING
+        if(Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Moved) //PANNING
         {
             Vector3 direction = touchStart - Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
             direction.z = 0;
@@ -46,9 +46,18 @@ public class Controls : MonoBehaviour
 
             float difference = currentMagnitude - prevMagnitude;
 
-            Zoom(difference * 0.0001f);
-        }*/
+            Zoom(difference * 0.1f);
 
+            if(Input.GetTouch(0).phase == TouchPhase.Ended)
+            {
+                touchStart = Camera.main.ScreenToWorldPoint(Input.GetTouch(1).position);
+            }
+            if (Input.GetTouch(1).phase == TouchPhase.Ended)
+            {
+                touchStart = Camera.main.ScreenToWorldPoint(Input.GetTouch(0).position);
+            }
+        }
+        
         if(Input.GetMouseButtonDown(0)) //CLIC MOUSE
         {
             touchStart = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -75,7 +84,7 @@ public class Controls : MonoBehaviour
     }
     void Zoom(float increment)
     {
-        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - increment, 20, 70);
+        Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - increment, 15, 40);
     }
     
 }

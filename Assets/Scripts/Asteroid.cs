@@ -13,14 +13,12 @@ public class Asteroid : MonoBehaviour
     Vector3 desiredPosition;
 
     [Header("ASTEROID PARAMETERS")]
+    [SerializeField] Sprite sprite_0;
+    [SerializeField] Sprite sprite_1;
+    [SerializeField] Sprite sprite_2;
     float destroyCounter;
     bool isFighting;
 
-    void Start()
-    {
-        
-    }
-    
     void Update()
     {
         Orbiting();
@@ -52,25 +50,23 @@ public class Asteroid : MonoBehaviour
             transform.rotation = Quaternion.Euler(0.0f, 0.0f, rotationZ);
         }        
     }
-
     void Orbiting()
     {
         transform.RotateAround(orbitalParent.transform.position, new Vector3(0, 0, orbitDirection), orbitSpeed * Time.deltaTime);
         desiredPosition = (transform.position - orbitalParent.transform.position).normalized * orbitRadius + orbitalParent.transform.position;
-        transform.position = Vector2.MoveTowards(transform.position, desiredPosition, Time.deltaTime * 0.1f);
+        transform.position = Vector2.MoveTowards(transform.position, desiredPosition, Time.deltaTime * 0.5f);
         transform.Rotate(new Vector3(0, 0, rotationSpeed));
 
         if (isFighting)
         {
             if (destroyCounter <= 0)
             {
-                //orbitalParent.AsteroidDestroyed(this);
+                orbitalParent.AsteroidDestroyed(this);
                 isFighting = false;
             }
             else destroyCounter -= Time.deltaTime;
         }
     }
-
     public void BornInStar(Star parent)
     {
         this.gameObject.SetActive(true);
@@ -78,15 +74,14 @@ public class Asteroid : MonoBehaviour
         gameObject.transform.position = orbitalParent.GetAsteroidBirthPoint().position;
         SetRandomSize();
         SetRandomSpeed();
+        SetRandomSprite();
         SetOrbiting(parent);
     }
-
     void SetRandomSize()
     {
-        float randomScale = Random.Range(3, 5);
+        float randomScale = Random.Range(0.5f, 1);
         gameObject.transform.localScale = new Vector3(randomScale, randomScale, 1);
     }
-
     void SetRandomSpeed()
     {
         orbitSpeed = Random.Range(4, 7);
@@ -100,6 +95,27 @@ public class Asteroid : MonoBehaviour
         {
             rotationSpeed = Random.Range(-0.2f, -0.5f);
         }
+    }
+    void SetRandomSprite()
+    {
+        int random = Random.Range(0, 3);
+
+        switch (random)
+        {
+            case 0:
+                GetComponentInChildren<SpriteRenderer>().sprite = sprite_0;
+                break;
+            case 1:
+                GetComponentInChildren<SpriteRenderer>().sprite = sprite_1;
+                break;
+            case 2:
+                GetComponentInChildren<SpriteRenderer>().sprite = sprite_2;
+                break;
+        }
+    }
+    public bool GetFighting()
+    {
+        return isFighting;
     }
 
 }
